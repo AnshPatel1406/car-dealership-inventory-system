@@ -1,5 +1,8 @@
 import { Router } from "express";
+import { registerUser } from "./auth.controller";
 
 const router = Router();
 
-export default router; // Returns 404 For now 
+router.post("/register", registerUser);
+
+export default router;
