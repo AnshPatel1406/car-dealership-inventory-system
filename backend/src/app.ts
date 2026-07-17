@@ -1,4 +1,5 @@
 import express from "express";
+import authRoutes from "./auth/auth.routes";
 
 const app = express();
 
@@ -10,5 +11,7 @@ app.get("/health", (_req, res) => {
     message: "Server is running",
   });
 });
+
+app.use("/api/auth", authRoutes);
 
 export default app;
