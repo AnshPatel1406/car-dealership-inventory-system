@@ -1,0 +1,22 @@
+# Dependencies
+**/node_modules
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Build
+dist
+
+# Logs
+*.log
+
+# Coverage
+coverage
+
+# OS
+.DS_Store
+
+# VS Code
+.vscode
