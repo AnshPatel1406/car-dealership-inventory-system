@@ -14,7 +14,7 @@ export default function RestockModal({
   onClose,
   onSubmit,
 }: RestockModalProps) {
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState('1');
 
   if (!isOpen) return null;
 
@@ -23,7 +23,7 @@ export default function RestockModal({
     const parsedQty = Number(quantity);
     if (parsedQty > 0) {
       onSubmit(parsedQty);
-      setQuantity('');
+      setQuantity('1');
     }
   };
 
@@ -46,16 +46,31 @@ export default function RestockModal({
               >
                 Quantity to Add
               </label>
-              <input
-                id="restock-qty"
-                type="number"
-                placeholder="e.g. 10"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                min="1"
-                required
-                className="w-full rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="flex items-center rounded-xl border border-slate-700 bg-slate-900/60 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setQuantity(String(Math.max(1, Number(quantity) - 1)))}
+                  className="px-5 py-3.5 text-xl font-bold text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer border-none bg-transparent"
+                >
+                  −
+                </button>
+                <input
+                  id="restock-qty"
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  min="1"
+                  required
+                  className="flex-1 border-none bg-transparent px-2 py-3.5 text-center text-lg font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setQuantity(String(Number(quantity || 0) + 1))}
+                  className="px-5 py-3.5 text-xl font-bold text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer border-none bg-transparent"
+                >
+                  +
+                </button>
+              </div>
             </div>
 
             {/* Actions Layout */}

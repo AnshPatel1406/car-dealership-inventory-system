@@ -29,7 +29,7 @@ export default function VehicleFormModal({
   const [model, setModel] = useState('');
   const [category, setCategory] = useState('Sedan');
   const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState("1");
 
   // Pre-populate form fields when editing an existing vehicle
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function VehicleFormModal({
       setModel('');
       setCategory('Sedan');
       setPrice('');
-      setQuantity('');
+      setQuantity('1');
     }
   }, [editingVehicle, isOpen]);
 
@@ -121,33 +121,46 @@ export default function VehicleFormModal({
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* Price Input */}
-              <div>
-                <label className={labelStyle}>Price ($)</label>
-                <input
-                  type="number"
-                  placeholder="e.g. 29000"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  min="0"
-                  required
-                  className={inputStyle}
-                />
-              </div>
+            {/* Price Input */}
+            <div>
+              <label className={labelStyle}>Price (₹)</label>
+              <input
+                type="number"
+                placeholder="e.g. 29000"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                min="0"
+                required
+                className={inputStyle}
+              />
+            </div>
 
-              {/* Quantity Input */}
-              <div>
-                <label className={labelStyle}>Quantity</label>
+            {/* Quantity Stepper */}
+            <div>
+              <label className={labelStyle}>Quantity</label>
+              <div className="flex items-center rounded-xl border border-slate-700 bg-slate-900/60 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setQuantity(String(Math.max(0, Number(quantity) - 1)))}
+                  className="px-5 py-3.5 text-xl font-bold text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer border-none bg-transparent"
+                >
+                  −
+                </button>
                 <input
                   type="number"
-                  placeholder="e.g. 5"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   min="0"
                   required
-                  className={inputStyle}
+                  className="flex-1 border-none bg-transparent px-2 py-3.5 text-center text-lg font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
+                <button
+                  type="button"
+                  onClick={() => setQuantity(String(Number(quantity || 0) + 1))}
+                  className="px-5 py-3.5 text-xl font-bold text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer border-none bg-transparent"
+                >
+                  +
+                </button>
               </div>
             </div>
 
