@@ -108,10 +108,25 @@ describe("Vehicle Service", () => {
       expect(results.length).toBe(2);
     });
 
-    it("should combine search filters (make and category)", async () => {
-      const results = await searchVehicles({ make: "Toyota", category: "Sedan" });
+    it("should filter vehicles by model", async () => {
+      const results = await searchVehicles({ model: "Civic" });
       expect(results.length).toBe(1);
-      expect(results[0].model).toBe("Camry");
+      expect(results[0].model).toBe("Civic");
+    });
+
+    it("should filter vehicles by minimum price", async () => {
+      const results = await searchVehicles({ minPrice: 25000 });
+      expect(results.length).toBe(2); // Camry (25000) and F-150 (40000)
+    });
+
+    it("should filter vehicles by maximum price", async () => {
+      const results = await searchVehicles({ maxPrice: 30000 });
+      expect(results.length).toBe(2); // Civic (20000) and Camry (25000)
+    });
+
+    it("should filter vehicles by price range (minPrice and maxPrice)", async () => {
+      const results = await searchVehicles({ minPrice: 22000, maxPrice: 35000 });
+      expect(results.length).toBe(1); // Camry (25000)
     });
   });
 

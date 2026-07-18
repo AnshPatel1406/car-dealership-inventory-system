@@ -156,9 +156,19 @@ describe("GET /api/vehicles/search", () => {
     expect(res.body.data[0].model).toBe("Civic");
   });
 
-  it("should search vehicles by category with 200", async () => {
+  it("should search vehicles by model with 200", async () => {
     const res = await request(app)
-      .get("/api/vehicles/search?category=SUV")
+      .get("/api/vehicles/search?model=Civic")
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(1);
+    expect(res.body.data[0].model).toBe("Civic");
+  });
+
+  it("should search vehicles by price range with 200", async () => {
+    const res = await request(app)
+      .get("/api/vehicles/search?minPrice=25000&maxPrice=30000")
       .set("Authorization", `Bearer ${userToken}`);
 
     expect(res.status).toBe(200);

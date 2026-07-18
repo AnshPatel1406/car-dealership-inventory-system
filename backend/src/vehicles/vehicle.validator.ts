@@ -44,7 +44,10 @@ export const updateVehicleSchema = createVehicleSchema.partial();
 
 export const searchVehicleSchema = z.object({
   make: z.string().optional(),
+  model: z.string().optional(),
   category: z.enum(vehicleCategories).optional(),
+  minPrice: z.coerce.number().min(0).optional(),
+  maxPrice: z.coerce.number().min(0).optional(),
 });
 
 export type CreateVehicleInput = z.infer<typeof createVehicleSchema>;

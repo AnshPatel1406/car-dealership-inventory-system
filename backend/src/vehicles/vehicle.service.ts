@@ -28,16 +28,37 @@ export async function getVehicleById(id: string): Promise<IVehicle | null> {
 /**
  * Searches and filters vehicles by make and/or category.
  */
-export async function searchVehicles(filters: { make?: string; category?: string }): Promise<IVehicle[]> {
+export async function searchVehicles(filters: {
+  make?: string;
+  model?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}): Promise<IVehicle[]> {
   const query: any = {};
   
   if (filters.make) {
     // Case-insensitive regex search for make
     query.make = { $regex: new RegExp(filters.make, "i") };
   }
+
+  if (filters.model) {
+    // Case-insensitive regex search for model
+    query.model = { $regex: new RegExp(filters.model, "i") };
+  }
   
   if (filters.category) {
     query.category = filters.category;
+  }
+
+  if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+    query.price = {};
+    if (filters.minPrice !== undefined) {
+      query.price.$gte = filters.minPrice;
+    }
+    if (filters.maxPrice !== undefined) {
+      query.price.$lte = filters.maxPrice;
+    }
   }
   
   return await Vehicle.find(query).sort({ createdAt: -1 });
