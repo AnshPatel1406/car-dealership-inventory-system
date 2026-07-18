@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
         {/* Left Side: Brand Logo and Name */}
         <div className="flex items-center gap-2">
-          <span className="text-xl" role="img" aria-label="car">🚗</span>
+          <img src="/logo.png" alt="CarVault Logo" className="h-12 w-auto object-contain" />
           <span className="font-bold tracking-tight text-white text-base">CarVault</span>
         </div>
 
