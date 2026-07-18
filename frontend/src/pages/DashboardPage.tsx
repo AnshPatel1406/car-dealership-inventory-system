@@ -1,11 +1,22 @@
 // src/pages/DashboardPage.tsx
-// Dashboard landing page layout shell integrating the navigation bar.
+// Dashboard landing page layout shell integrating navigation and the search panel.
 
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
 
 export default function DashboardPage() {
   const { isAdmin } = useAuth();
+
+  const handleSearch = (filters: Record<string, string>) => {
+    console.log('Search filters applied:', filters);
+    // TODO: Connect to backend search API in Step 7
+  };
+
+  const handleClear = () => {
+    console.log('Search filters cleared');
+    // TODO: Connect to backend reset API in Step 7
+  };
 
   return (
     <div className="min-h-screen bg-bg-dark">
@@ -34,7 +45,12 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Dashboard Grid Shell Placeholder (Will contain search and cards in subsequent steps) */}
+        {/* Search Bar Panel */}
+        <div className="mb-8">
+          <SearchBar onSearch={handleSearch} onClear={handleClear} />
+        </div>
+
+        {/* Dashboard Grid Shell Placeholder */}
         <div className="rounded-2xl border border-dashed border-slate-700 p-12 text-center text-text-secondary">
           <p className="text-lg">Inventory grid loading placeholder…</p>
         </div>
