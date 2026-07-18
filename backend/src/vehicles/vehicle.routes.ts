@@ -2,7 +2,15 @@
 // Route endpoints for the vehicles inventory module.
 
 import { Router } from "express";
-import { addVehicle, listVehicles, filterVehicles, editVehicle, removeVehicle } from "./vehicle.controller";
+import {
+  addVehicle,
+  listVehicles,
+  filterVehicles,
+  editVehicle,
+  removeVehicle,
+  buyVehicle,
+  restockInventoryVehicle,
+} from "./vehicle.controller";
 import { authenticate, authorizeAdmin } from "../middleware/auth.middleware";
 
 const router = Router();
@@ -14,9 +22,13 @@ router.use(authenticate);
 router.get("/", listVehicles);
 router.get("/search", filterVehicles);
 
+// Purchase can be done by any authenticated user
+router.post("/:id/purchase", buyVehicle);
+
 // Admin-only mutations
 router.post("/", authorizeAdmin, addVehicle);
 router.put("/:id", authorizeAdmin, editVehicle);
 router.delete("/:id", authorizeAdmin, removeVehicle);
+router.post("/:id/restock", authorizeAdmin, restockInventoryVehicle);
 
 export default router;

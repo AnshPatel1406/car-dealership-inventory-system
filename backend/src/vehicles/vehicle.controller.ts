@@ -9,8 +9,15 @@ import {
   searchVehicles,
   updateVehicle,
   deleteVehicle,
+  purchaseVehicle,
+  restockVehicle,
 } from "./vehicle.service";
-import { createVehicleSchema, updateVehicleSchema, searchVehicleSchema } from "./vehicle.validator";
+import {
+  createVehicleSchema,
+  updateVehicleSchema,
+  searchVehicleSchema,
+  restockVehicleSchema,
+} from "./vehicle.validator";
 
 /**
  * Adds a new vehicle (Admin only).
@@ -163,6 +170,82 @@ export async function removeVehicle(req: Request, res: Response) {
       message: "Vehicle deleted successfully",
     });
   } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+/**
+ * Purchases a vehicle (decreases quantity by 1).
+ */
+export async function buyVehicle(req: Request, res: Response) {
+  try {
+    const { id } = req.params as { id: string };
+    const vehicle = await purchaseVehicle(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Vehicle purchased successfully",
+      data: vehicle,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Vehicle not found") {
+      return res.status(404).json({
+        success: false,
+        message: "Vehicle not found",
+      });
+    }
+
+    if (error instanceof Error && error.message === "Vehicle is out of stock") {
+      return res.status(400).json({
+        success: false,
+        message: "Vehicle is out of stock",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+/**
+ * Restocks a vehicle (increases quantity, Admin only).
+ */
+export async function restockInventoryVehicle(req: Request, res: Response) {
+  try {
+    const { id } = req.params as { id: string };
+    const parsed = restockVehicleSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: parsed.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        })),
+      });
+    }
+
+    const vehicle = await restockVehicle(id, parsed.data.quantity);
+
+    return res.status(200).json({
+      success: true,
+      message: "Vehicle restocked successfully",
+      data: vehicle,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Vehicle not found") {
+      return res.status(404).json({
+        success: false,
+        message: "Vehicle not found",
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: "Internal server error",
