@@ -95,7 +95,7 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
         <div>
           <input
             type="number"
-            placeholder="Min Price ($)"
+            placeholder="Min Price (₹)"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             min="0"
@@ -107,7 +107,7 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
         <div>
           <input
             type="number"
-            placeholder="Max Price ($)"
+            placeholder="Max Price (₹)"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             min="0"

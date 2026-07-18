@@ -59,7 +59,7 @@ export default function VehicleCard({
           </div>
           <div className="text-right">
             <span className="text-xl font-black text-indigo-400">
-              ${vehicle.price.toLocaleString()}
+              ₹{vehicle.price.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
@@ -67,16 +67,14 @@ export default function VehicleCard({
         {/* Stock Status Indicator */}
         <div className="mb-6 flex items-center gap-2">
           <div
-            className={`h-2.5 w-2.5 rounded-full ${
-              isOutOfStock
+            className={`h-2.5 w-2.5 rounded-full ${isOutOfStock
                 ? 'bg-danger animate-pulse'
                 : 'bg-success'
-            }`}
+              }`}
           />
           <span
-            className={`text-xs font-semibold uppercase tracking-wider ${
-              isOutOfStock ? 'text-danger' : 'text-success'
-            }`}
+            className={`text-xs font-semibold uppercase tracking-wider ${isOutOfStock ? 'text-danger' : 'text-success'
+              }`}
           >
             {isOutOfStock ? 'Out of Stock' : `${vehicle.quantity} Units Available`}
           </span>
@@ -88,11 +86,10 @@ export default function VehicleCard({
           <button
             onClick={() => onPurchase(vehicle._id)}
             disabled={isOutOfStock}
-            className={`w-full rounded-xl py-3 text-sm font-bold transition-all border-none ${
-              isOutOfStock
+            className={`w-full rounded-xl py-3 text-sm font-bold transition-all border-none ${isOutOfStock
                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
                 : 'bg-indigo-600 text-white hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 cursor-pointer'
-            }`}
+              }`}
           >
             {isOutOfStock ? 'Sold Out' : 'Purchase Vehicle'}
           </button>
