@@ -12,6 +12,8 @@ import {
   searchVehicles,
   updateVehicle,
   deleteVehicle,
+  purchaseVehicle,
+  restockVehicle,
 } from "./vehicle.service";
 
 let mongoServer: MongoMemoryServer;
@@ -167,6 +169,51 @@ describe("Vehicle Service", () => {
       const fakeId = new mongoose.Types.ObjectId().toString();
       const isDeleted = await deleteVehicle(fakeId);
       expect(isDeleted).toBe(false);
+    });
+  });
+
+  describe("purchaseVehicle", () => {
+    it("should decrease vehicle quantity by 1 upon purchase", async () => {
+      const created = await createVehicle(mockVehicleData); // quantity: 5
+      const purchased = await purchaseVehicle(created._id.toString());
+      
+      expect(purchased.quantity).toBe(4);
+
+      const fetched = await getVehicleById(created._id.toString());
+      expect(fetched!.quantity).toBe(4);
+    });
+
+    it("should throw an error if vehicle is out of stock (quantity is 0)", async () => {
+      const created = await createVehicle({ ...mockVehicleData, quantity: 0 });
+      await expect(purchaseVehicle(created._id.toString())).rejects.toThrow("Vehicle is out of stock");
+    });
+
+    it("should throw an error if vehicle does not exist", async () => {
+      const fakeId = new mongoose.Types.ObjectId().toString();
+      await expect(purchaseVehicle(fakeId)).rejects.toThrow("Vehicle not found");
+    });
+  });
+
+  describe("restockVehicle", () => {
+    it("should increase vehicle quantity by given amount upon restocking", async () => {
+      const created = await createVehicle(mockVehicleData); // quantity: 5
+      const restocked = await restockVehicle(created._id.toString(), 10);
+      
+      expect(restocked.quantity).toBe(15);
+
+      const fetched = await getVehicleById(created._id.toString());
+      expect(fetched!.quantity).toBe(15);
+    });
+
+    it("should throw an error if restocking amount is invalid (less than or equal to 0)", async () => {
+      const created = await createVehicle(mockVehicleData);
+      await expect(restockVehicle(created._id.toString(), 0)).rejects.toThrow("Restock quantity must be greater than 0");
+      await expect(restockVehicle(created._id.toString(), -5)).rejects.toThrow("Restock quantity must be greater than 0");
+    });
+
+    it("should throw an error if vehicle does not exist", async () => {
+      const fakeId = new mongoose.Types.ObjectId().toString();
+      await expect(restockVehicle(fakeId, 10)).rejects.toThrow("Vehicle not found");
     });
   });
 });
