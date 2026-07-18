@@ -5,6 +5,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { AxiosError } from 'axios';
 
@@ -63,15 +65,31 @@ export default function LoginPage() {
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
 
       {/* Ambient background glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-10"
-      >
-        <div className="absolute -top-48 left-1/2 h-[500px] w-[700px] -translate-x-1/2 bg-indigo-600/20 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 right-0 h-[400px] w-[500px] bg-cyan-500/10 blur-[100px] rounded-full" />
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-48 left-1/2 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-600/20 blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute -bottom-48 right-0 h-[500px] w-[600px] rounded-full bg-cyan-500/10 blur-[100px]"
+        />
       </div>
 
-      <div className="w-full max-w-md">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
         {/* Brand */}
         <div className="mb-8 text-center flex flex-col items-center">
           <img src="/logo.png" alt="CarVault Logo" className="h-40 w-auto object-contain" />
@@ -87,17 +105,25 @@ export default function LoginPage() {
         <div className="rounded-2xl border border-slate-200 bg-white/70 p-8 shadow-2xl backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/70">
 
           {/* Tab switcher */}
-          <div className="mb-6 flex rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+          <div className="relative mb-8 flex rounded-xl bg-slate-100 p-1 dark:bg-slate-800/50">
             {(['login', 'register'] as Tab[]).map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => switchTab(t)}
-                className={`flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-all cursor-pointer border-none ${tab === t
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                  }`}
+                className={`relative flex-1 rounded-lg py-2.5 text-sm font-semibold capitalize transition-colors cursor-pointer border-none z-10 ${
+                  tab === t
+                    ? 'text-indigo-600 dark:text-indigo-400'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                }`}
               >
+                {tab === t && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 -z-10 rounded-lg bg-white shadow-sm dark:bg-[#09090b]"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
                 {t}
               </button>
             ))}
@@ -166,21 +192,34 @@ export default function LoginPage() {
               )}
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               id="auth-submit-btn"
               type="submit"
               disabled={loading}
-              className="mt-2 w-full rounded-lg bg-indigo-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-500 hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer border-none"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-colors hover:bg-indigo-500 hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer border-none"
             >
-              {loading
-                ? 'Please wait…'
-                : tab === 'register'
-                  ? 'Create Account'
-                  : 'Sign In'}
-            </button>
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Please wait…
+                </>
+              ) : tab === 'register' ? (
+                <>
+                  Create Account
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </motion.button>
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
