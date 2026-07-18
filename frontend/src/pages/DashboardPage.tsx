@@ -10,6 +10,7 @@ import VehicleCard, { type Vehicle } from '../components/VehicleCard';
 import VehicleFormModal from '../components/VehicleFormModal';
 import RestockModal from '../components/RestockModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import Footer from '../components/Footer';
 import toast from 'react-hot-toast';
 import type { AxiosError } from 'axios';
 
@@ -154,7 +155,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-bg-dark">
+    <div className="flex min-h-screen flex-col bg-bg-dark">
       <Navbar />
 
       <main className="mx-auto max-w-7xl px-6 py-8">
@@ -219,6 +220,8 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      <Footer />
 
       {/* Admin Overlays */}
       <VehicleFormModal
