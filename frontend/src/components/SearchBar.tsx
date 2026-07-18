@@ -105,6 +105,7 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             min="0"
+            step="10000"
             className={inputStyle}
           />
         </div>
@@ -117,6 +118,7 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             min="0"
+            step="10000"
             className={inputStyle}
           />
         </div>
