@@ -1,9 +1,11 @@
 {
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "dns": "^0.2.2",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.5.0",
     "mongoose": "^9.7.4",
     "zod": "^4.4.3"
   },
@@ -19,13 +21,10 @@
     "vitest": "^4.1.10"
   },
   "scripts": {
-  "dev": "tsx watch src/server.ts",
-  "build": "tsc",
-  "start": "node dist/server.js",
-  "test": "vitest --run",
-  "test:watch": "vitest",
-  "dev": "tsx watch src/server.ts",
-  "build": "tsc",
-  "start": "node dist/server.js"
-}
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "vitest --run",
+    "test:watch": "vitest"
+  }
 }
