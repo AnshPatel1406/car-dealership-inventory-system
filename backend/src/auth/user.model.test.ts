@@ -94,6 +94,19 @@ describe("User Model", () => {
     await expect(user.save()).rejects.toThrow(mongoose.Error.ValidationError);
   });
 
+  it("should reject a malformed email address", async () => {
+    const invalidEmails = ["notanemail", "missing@", "@nodomain.com", "no spaces@test.com"];
+
+    for (const email of invalidEmails) {
+      const user = new User({
+        name: "Bad Email User",
+        email,
+        password: "hashedPassword123",
+      });
+      await expect(user.save()).rejects.toThrow(mongoose.Error.ValidationError);
+    }
+  });
+
   it("should add createdAt and updatedAt timestamps automatically", async () => {
     const user = await User.create({
       name: "Timestamp User",
