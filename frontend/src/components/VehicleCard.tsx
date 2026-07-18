@@ -2,6 +2,8 @@
 // Premium card interface displaying vehicle specifications, stock alerts, and interactive purchase controls.
 
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
+import { PackagePlus, Edit, Trash2, CarFront, Truck, Gauge, Shield, Zap, Car } from 'lucide-react';
 
 export interface Vehicle {
   _id: string;
@@ -22,12 +24,25 @@ interface VehicleCardProps {
 
 // Accent gradient headers based on vehicle category
 const categoryGradients: Record<string, string> = {
-  Sedan: 'from-blue-500 to-indigo-600',
-  SUV: 'from-emerald-500 to-teal-600',
-  Truck: 'from-amber-500 to-orange-600',
-  Coupe: 'from-violet-500 to-purple-600',
-  Convertible: 'from-rose-500 to-pink-600',
-  Hatchback: 'from-cyan-500 to-sky-600',
+  Sedan: 'from-blue-500/20 to-indigo-600/20 text-indigo-500',
+  SUV: 'from-emerald-500/20 to-teal-600/20 text-teal-500',
+  Truck: 'from-amber-500/20 to-orange-600/20 text-orange-500',
+  Coupe: 'from-violet-500/20 to-purple-600/20 text-purple-500',
+  Convertible: 'from-rose-500/20 to-pink-600/20 text-pink-500',
+  Hatchback: 'from-cyan-500/20 to-sky-600/20 text-cyan-500',
+};
+
+const CategoryIcon = ({ category, className }: { category: string; className?: string }) => {
+  switch (category) {
+    case 'SUV': return <Shield className={className} />;
+    case 'Truck': return <Truck className={className} />;
+    case 'Coupe': return <Zap className={className} />;
+    case 'Convertible': return <CarFront className={className} />;
+    case 'Hatchback': return <Gauge className={className} />;
+    case 'Sedan':
+    default:
+      return <Car className={className} />;
+  }
 };
 
 export default function VehicleCard({
@@ -42,9 +57,19 @@ export default function VehicleCard({
   const gradient = categoryGradients[vehicle.category] ?? 'from-slate-500 to-slate-600';
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/5 dark:border-slate-700/60 dark:bg-slate-900/40">
-      {/* Category Gradient Top Bar */}
-      <div className={`h-1.5 w-full bg-gradient-to-r ${gradient}`} />
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      whileHover={{ y: -4 }}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white/60 backdrop-blur-md shadow-sm transition-colors hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/5 dark:border-slate-800 dark:bg-[#09090b]/40 dark:hover:border-indigo-500/50"
+    >
+      {/* Category Illustration Area */}
+      <div className={`flex h-32 w-full items-center justify-center bg-gradient-to-br ${gradient} bg-opacity-10`}>
+        <motion.div whileHover={{ scale: 1.1, rotate: -2 }} transition={{ type: "spring", stiffness: 300 }}>
+          <CategoryIcon category={vehicle.category} className="h-16 w-16 opacity-80" />
+        </motion.div>
+      </div>
 
       <div className="flex flex-1 flex-col p-6">
         {/* Header Information */}
@@ -96,31 +121,38 @@ export default function VehicleCard({
 
           {/* Admin Management Buttons */}
           {isAdmin && (
-            <div className="mt-2 flex gap-2 border-t border-slate-200 pt-3 dark:border-slate-800">
-              <button
+            <div className="mt-4 flex gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => onRestock(vehicle._id)}
-                className="flex-1 rounded-lg bg-emerald-600/10 py-2.5 text-xs font-bold text-emerald-600 border border-emerald-500/20 hover:bg-emerald-600/20 cursor-pointer dark:text-emerald-400"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald-500/10 py-2 text-xs font-bold text-emerald-600 transition-colors hover:bg-emerald-500/20 cursor-pointer dark:text-emerald-400 border border-emerald-500/20"
               >
-                📦 Restock
-              </button>
-              <button
+                <PackagePlus className="h-3.5 w-3.5" />
+                Restock
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => onEdit(vehicle)}
-                className="rounded-lg bg-slate-100 px-3.5 py-2.5 text-xs font-bold text-slate-700 border border-slate-300 hover:bg-slate-200 hover:text-slate-900 cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:text-white"
+                className="flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 cursor-pointer dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
                 title="Edit details"
               >
-                ✏️
-              </button>
-              <button
+                <Edit className="h-4 w-4" />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => onDelete(vehicle)}
-                className="rounded-lg bg-red-600/10 px-3.5 py-2.5 text-xs font-bold text-red-400 border border-red-500/20 hover:bg-red-600/20 cursor-pointer"
+                className="flex items-center justify-center rounded-lg bg-red-500/10 px-3 py-2 text-red-500 transition-colors hover:bg-red-500/20 hover:text-red-600 cursor-pointer border border-red-500/20 dark:hover:text-red-400"
                 title="Delete vehicle"
               >
-                🗑️
-              </button>
+                <Trash2 className="h-4 w-4" />
+              </motion.button>
             </div>
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
