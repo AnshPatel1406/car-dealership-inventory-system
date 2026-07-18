@@ -53,7 +53,7 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-5 w-5 text-indigo-500" />
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-            Command Palette
+            Quick Search
           </h2>
         </div>
       </div>
