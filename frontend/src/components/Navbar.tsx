@@ -16,13 +16,13 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-[#334155] dark:bg-[#0b0f19]/80">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5">
         {/* Brand/Logo */}
         <button
           onClick={() => navigate('/')}
           className="flex items-center gap-2 border-none bg-transparent text-xl font-bold tracking-tight text-slate-900 hover:opacity-85 cursor-pointer dark:text-white"
         >
-          <img src="/logo.png" alt="CarVault Logo" className="h-16 w-auto object-contain" />
+          <img src="/logo.png" alt="CarVault Logo" className="h-10 w-auto object-contain" />
           <span>CarVault</span>
           {isAdmin && (
             <span className="ml-2 rounded-full bg-indigo-600 px-2.5 py-0.5 text-xs font-semibold text-white">
