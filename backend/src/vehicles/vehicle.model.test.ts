@@ -29,7 +29,7 @@ describe("Vehicle Model", () => {
   const validVehicle = {
     make: "Toyota",
     model: "Camry",
-    category: "Sedan",
+    category: "Sedan" as const,
     price: 25000,
     quantity: 10,
   };
