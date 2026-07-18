@@ -14,7 +14,7 @@ type Tab = 'login' | 'register';
 
 interface ApiError {
   message?: string;
-  errors?: string[];
+  errors?: Array<string | { message: string; field?: string }>;
 }
 
 export default function LoginPage() {
@@ -52,10 +52,16 @@ export default function LoginPage() {
       }
     } catch (err) {
       const axiosErr = err as AxiosError<ApiError>;
-      const msg =
-        axiosErr.response?.data?.errors?.[0] ??
-        axiosErr.response?.data?.message ??
-        'Something went wrong. Please try again.';
+      
+      let msg = 'Something went wrong. Please try again.';
+      const firstError = axiosErr.response?.data?.errors?.[0];
+      
+      if (firstError) {
+        msg = typeof firstError === 'string' ? firstError : firstError.message;
+      } else if (axiosErr.response?.data?.message) {
+        msg = axiosErr.response.data.message;
+      }
+      
       toast.error(msg);
     } finally {
       setLoading(false);
