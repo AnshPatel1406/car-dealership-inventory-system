@@ -148,7 +148,7 @@ export default function DashboardPage() {
   // Compute Stats for Admin
   const totalVehicles = vehicles.length;
   const totalValue = useMemo(() => vehicles.reduce((sum, v) => sum + (v.price * v.quantity), 0), [vehicles]);
-  const lowStockCount = useMemo(() => vehicles.filter(v => v.quantity > 0 && v.quantity < 3).length, [vehicles]);
+  const lowStockCount = useMemo(() => vehicles.filter(v => v.quantity <= 2).length, [vehicles]);
 
   // Premium Skeleton Card component
   const SkeletonCard = () => (
