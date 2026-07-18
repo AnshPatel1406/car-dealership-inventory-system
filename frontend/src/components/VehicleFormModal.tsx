@@ -2,6 +2,8 @@
 // Modal overlay displaying form controls to add or update vehicle specifications (Admin only).
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Edit, Car, Check } from 'lucide-react';
 import type { Vehicle } from './VehicleCard';
 
 interface VehicleFormModalProps {
@@ -66,15 +68,44 @@ export default function VehicleFormModal({
     'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900/60 dark:text-white dark:placeholder-slate-500';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm dark:bg-black/60">
-      <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl backdrop-blur-xl transition-all dark:border-slate-700/60 dark:bg-slate-900/90">
-        {/* Accent Top Bar */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 to-indigo-600" />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
+            className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl backdrop-blur-xl dark:border-slate-800 dark:bg-[#09090b]"
+          >
+            {/* Accent Top Bar */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 to-indigo-600" />
 
-        <div className="p-6">
-          <h2 className="text-xl font-bold text-slate-900 tracking-wide mb-5 dark:text-white">
-            {editingVehicle ? '✏️ Edit Vehicle Specifications' : '🚗 Register New Vehicle'}
-          </h2>
+            <div className="p-6">
+              <h2 className="mb-5 flex items-center gap-2 text-xl font-bold tracking-wide text-slate-900 dark:text-white">
+                {editingVehicle ? (
+                  <>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-500">
+                      <Edit className="h-5 w-5" />
+                    </div>
+                    Edit Vehicle Specifications
+                  </>
+                ) : (
+                  <>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-500">
+                      <Car className="h-5 w-5" />
+                    </div>
+                    Register New Vehicle
+                  </>
+                )}
+              </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -167,20 +198,25 @@ export default function VehicleFormModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer border-none bg-transparent dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                className="cursor-pointer rounded-xl border-none bg-transparent px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
               >
                 Cancel
               </button>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer border-none"
+                className="flex cursor-pointer items-center gap-2 rounded-xl border-none bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20"
               >
+                <Check className="h-4 w-4" />
                 {editingVehicle ? 'Save Specifications' : 'Register Vehicle'}
-              </button>
+              </motion.button>
             </div>
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
+    )}
+    </AnimatePresence>
   );
 }
