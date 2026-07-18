@@ -9,6 +9,7 @@ import SearchBar from '../components/SearchBar';
 import VehicleCard, { type Vehicle } from '../components/VehicleCard';
 import VehicleFormModal from '../components/VehicleFormModal';
 import RestockModal from '../components/RestockModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import toast from 'react-hot-toast';
 import type { AxiosError } from 'axios';
 
@@ -22,6 +23,8 @@ export default function DashboardPage() {
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [isRestockModalOpen, setIsRestockModalOpen] = useState(false);
   const [activeRestockId, setActiveRestockId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle | null>(null);
 
   // Fetch vehicles helper
   const loadVehicles = useCallback(async () => {
@@ -120,15 +123,22 @@ export default function DashboardPage() {
     setIsVehicleModalOpen(true);
   };
 
-  const handleDeleteClick = async (id: string) => {
-    if (!window.confirm('Are you sure you want to remove this vehicle from inventory?')) return;
+  const handleDeleteClick = (vehicle: Vehicle) => {
+    setVehicleToDelete(vehicle);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!vehicleToDelete) return;
     try {
-      await vehiclesAPI.remove(id);
+      await vehiclesAPI.remove(vehicleToDelete._id);
       toast.success('Vehicle removed successfully.');
       loadVehicles();
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;
       toast.error(axiosErr.response?.data?.message ?? 'Delete request failed.');
+    } finally {
+      setVehicleToDelete(null);
     }
   };
 
@@ -228,6 +238,16 @@ export default function DashboardPage() {
           setActiveRestockId(null);
         }}
         onSubmit={handleRestockSubmit}
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setVehicleToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        vehicleInfo={vehicleToDelete ? { make: vehicleToDelete.make, model: vehicleToDelete.model } : null}
       />
     </div>
   );

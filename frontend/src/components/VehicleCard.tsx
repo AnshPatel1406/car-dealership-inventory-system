@@ -17,7 +17,7 @@ interface VehicleCardProps {
   onPurchase: (id: string) => void;
   onRestock: (id: string) => void;
   onEdit: (vehicle: Vehicle) => void;
-  onDelete: (id: string) => void;
+  onDelete: (vehicle: Vehicle) => void;
 }
 
 // Accent gradient headers based on vehicle category
@@ -111,7 +111,7 @@ export default function VehicleCard({
                 ✏️
               </button>
               <button
-                onClick={() => onDelete(vehicle._id)}
+                onClick={() => onDelete(vehicle)}
                 className="rounded-lg bg-red-600/10 px-3.5 py-2.5 text-xs font-bold text-red-400 border border-red-500/20 hover:bg-red-600/20 cursor-pointer"
                 title="Delete vehicle"
               >
