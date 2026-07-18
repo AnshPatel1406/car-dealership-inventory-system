@@ -278,3 +278,129 @@ describe("DELETE /api/vehicles/:id", () => {
     expect(res.status).toBe(404);
   });
 });
+
+// ─── POST /api/vehicles/:id/purchase (Purchase Vehicle) ──────────────────────
+
+describe("POST /api/vehicles/:id/purchase", () => {
+  let vehicleId: string;
+
+  beforeEach(async () => {
+    const v = await Vehicle.create({
+      make: "Subaru",
+      model: "Outback",
+      category: "SUV",
+      price: 32000,
+      quantity: 2,
+    });
+    vehicleId = v._id.toString();
+  });
+
+  it("should reject unauthenticated request with 401", async () => {
+    const res = await request(app).post(`/api/vehicles/${vehicleId}/purchase`);
+    expect(res.status).toBe(401);
+  });
+
+  it("should allow regular user to purchase a vehicle with 200", async () => {
+    const res = await request(app)
+      .post(`/api/vehicles/${vehicleId}/purchase`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.quantity).toBe(1);
+
+    const inDb = await Vehicle.findById(vehicleId);
+    expect(inDb!.quantity).toBe(1);
+  });
+
+  it("should return 400 if vehicle is out of stock", async () => {
+    await Vehicle.findByIdAndUpdate(vehicleId, { quantity: 0 });
+
+    const res = await request(app)
+      .post(`/api/vehicles/${vehicleId}/purchase`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toBe("Vehicle is out of stock");
+  });
+
+  it("should return 404 if purchasing non-existent vehicle", async () => {
+    const fakeId = new mongoose.Types.ObjectId().toString();
+    const res = await request(app)
+      .post(`/api/vehicles/${fakeId}/purchase`)
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(res.status).toBe(404);
+  });
+});
+
+// ─── POST /api/vehicles/:id/restock (Restock Vehicle) ────────────────────────
+
+describe("POST /api/vehicles/:id/restock", () => {
+  let vehicleId: string;
+
+  beforeEach(async () => {
+    const v = await Vehicle.create({
+      make: "Mazda",
+      model: "CX-5",
+      category: "SUV",
+      price: 29000,
+      quantity: 5,
+    });
+    vehicleId = v._id.toString();
+  });
+
+  it("should reject unauthenticated request with 401", async () => {
+    const res = await request(app).post(`/api/vehicles/${vehicleId}/restock`).send({ quantity: 10 });
+    expect(res.status).toBe(401);
+  });
+
+  it("should reject regular user request with 403 (Admin only)", async () => {
+    const res = await request(app)
+      .post(`/api/vehicles/${vehicleId}/restock`)
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({ quantity: 10 });
+    expect(res.status).toBe(403);
+  });
+
+  it("should reject invalid restocking payload with 400 (Admin)", async () => {
+    // Missing quantity
+    let res = await request(app)
+      .post(`/api/vehicles/${vehicleId}/restock`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({});
+    expect(res.status).toBe(400);
+
+    // Negative quantity
+    res = await request(app)
+      .post(`/api/vehicles/${vehicleId}/restock`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ quantity: -5 });
+    expect(res.status).toBe(400);
+  });
+
+  it("should allow admin to restock vehicle with 200", async () => {
+    const res = await request(app)
+      .post(`/api/vehicles/${vehicleId}/restock`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ quantity: 10 });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.quantity).toBe(15);
+
+    const inDb = await Vehicle.findById(vehicleId);
+    expect(inDb!.quantity).toBe(15);
+  });
+
+  it("should return 404 if restocking non-existent vehicle", async () => {
+    const fakeId = new mongoose.Types.ObjectId().toString();
+    const res = await request(app)
+      .post(`/api/vehicles/${fakeId}/restock`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ quantity: 5 });
+
+    expect(res.status).toBe(404);
+  });
+});
