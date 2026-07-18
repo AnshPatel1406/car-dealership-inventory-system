@@ -1,9 +1,9 @@
 // src/components/VehicleCard.tsx
-// Premium card interface displaying vehicle specifications, stock alerts, and interactive purchase controls.
+// Premium, editorial-style card interface displaying vehicle specifications and stock status.
 
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { PackagePlus, Edit, Trash2, CarFront, Truck, Gauge, Shield, Zap, Car } from 'lucide-react';
+import { PackagePlus, Edit, Trash2 } from 'lucide-react';
 
 export interface Vehicle {
   _id: string;
@@ -22,29 +22,6 @@ interface VehicleCardProps {
   onDelete: (vehicle: Vehicle) => void;
 }
 
-// Accent gradient headers based on vehicle category
-const categoryGradients: Record<string, string> = {
-  Sedan: 'from-blue-500/20 to-indigo-600/20 text-indigo-500',
-  SUV: 'from-emerald-500/20 to-teal-600/20 text-teal-500',
-  Truck: 'from-amber-500/20 to-orange-600/20 text-orange-500',
-  Coupe: 'from-violet-500/20 to-purple-600/20 text-purple-500',
-  Convertible: 'from-rose-500/20 to-pink-600/20 text-pink-500',
-  Hatchback: 'from-cyan-500/20 to-sky-600/20 text-cyan-500',
-};
-
-const CategoryIcon = ({ category, className }: { category: string; className?: string }) => {
-  switch (category) {
-    case 'SUV': return <Shield className={className} />;
-    case 'Truck': return <Truck className={className} />;
-    case 'Coupe': return <Zap className={className} />;
-    case 'Convertible': return <CarFront className={className} />;
-    case 'Hatchback': return <Gauge className={className} />;
-    case 'Sedan':
-    default:
-      return <Car className={className} />;
-  }
-};
-
 export default function VehicleCard({
   vehicle,
   onPurchase,
@@ -54,102 +31,112 @@ export default function VehicleCard({
 }: VehicleCardProps) {
   const { isAdmin } = useAuth();
   const isOutOfStock = vehicle.quantity === 0;
-  const gradient = categoryGradients[vehicle.category] ?? 'from-slate-500 to-slate-600';
+  const isLowStock = !isOutOfStock && vehicle.quantity <= 3;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
+      exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -4 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white/60 backdrop-blur-md shadow-sm transition-colors hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/5 dark:border-slate-800 dark:bg-[#09090b]/40 dark:hover:border-indigo-500/50"
+      className="flex flex-col border border-slate-200 bg-[#FAFAF9] p-8 shadow-sm transition-all hover:shadow-md dark:border-slate-800/60 dark:bg-[#111113] dark:shadow-none"
     >
-      {/* Category Illustration Area */}
-      <div className={`flex h-32 w-full items-center justify-center bg-gradient-to-br ${gradient} bg-opacity-10`}>
-        <motion.div whileHover={{ scale: 1.1, rotate: -2 }} transition={{ type: "spring", stiffness: 300 }}>
-          <CategoryIcon category={vehicle.category} className="h-16 w-16 opacity-80" />
-        </motion.div>
-      </div>
-
-      <div className="flex flex-1 flex-col p-6">
-        {/* Header Information */}
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-500 dark:text-white dark:group-hover:text-indigo-400">
-              {vehicle.make} <span className="font-semibold text-slate-600 dark:text-slate-300">{vehicle.model}</span>
+      <div className="flex flex-col gap-6">
+        {/* Header: Name and Price */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col items-start gap-3">
+            <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white">
+              {vehicle.make} {vehicle.model}
             </h3>
-            <span className="mt-2 inline-block rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:bg-slate-800/80 dark:text-slate-400">
+            <span className="rounded-full border border-slate-300 bg-transparent px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:border-slate-700 dark:text-slate-400">
               {vehicle.category}
             </span>
           </div>
           <div className="text-right">
-            <span className="text-xl font-black text-indigo-400">
+            <span className="font-serif text-2xl font-light tracking-wide text-slate-600 dark:text-slate-300">
               ₹{vehicle.price.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        {/* Stock Status Indicator */}
-        <div className="mb-6 flex items-center gap-2">
-          <div
-            className={`h-2.5 w-2.5 rounded-full ${isOutOfStock
-                ? 'bg-danger animate-pulse'
-                : 'bg-success'
-              }`}
-          />
-          <span
-            className={`text-xs font-semibold uppercase tracking-wider ${isOutOfStock ? 'text-danger' : 'text-success'
-              }`}
-          >
-            {isOutOfStock ? 'Out of Stock' : `${vehicle.quantity} Units Available`}
-          </span>
+        <hr className="border-t-0 border-b border-slate-200 dark:border-slate-800" />
+
+        {/* Stock Status */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest ${
+                  isOutOfStock
+                    ? 'border-red-300 text-red-600 dark:border-red-900/50 dark:text-red-400'
+                    : isLowStock
+                    ? 'border-amber-300 text-amber-600 dark:border-amber-900/50 dark:text-amber-400'
+                    : 'border-teal-300 text-teal-700 dark:border-teal-900/50 dark:text-teal-400'
+                }`}
+              >
+                {isOutOfStock ? 'Out of Stock' : isLowStock ? 'Low Stock' : 'In Stock'}
+              </span>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                {vehicle.quantity} {vehicle.quantity === 1 ? 'Unit' : 'Units'}
+              </span>
+            </div>
+          </div>
+          
+          {/* Progress line visualization */}
+          <div className="flex h-[3px] w-full gap-0.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+            {Array.from({ length: 15 }).map((_, i) => (
+              <div 
+                key={i} 
+                className={`h-full flex-1 ${
+                  i < Math.min(vehicle.quantity, 15) 
+                    ? (isLowStock ? 'bg-amber-500' : 'bg-teal-700 dark:bg-teal-600') 
+                    : 'bg-transparent'
+                }`} 
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Buttons / Actions Layout */}
-        <div className="mt-auto flex flex-col gap-2">
-          {/* Main Action: Purchase */}
+        <hr className="border-t-0 border-b border-slate-200 dark:border-slate-800" />
+
+        {/* Actions */}
+        <div className="flex flex-col gap-4">
           <button
             onClick={() => onPurchase(vehicle._id)}
             disabled={isOutOfStock}
-            className={`w-full rounded-xl py-3 text-sm font-bold transition-all border-none ${isOutOfStock
-                ? 'bg-slate-200 text-slate-400 cursor-not-allowed dark:bg-slate-800 dark:text-slate-500'
-                : 'bg-indigo-600 text-white hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 cursor-pointer'
-              }`}
+            className={`w-full rounded-[8px] border-none py-3.5 text-sm font-bold tracking-wide transition-all ${
+              isOutOfStock
+                ? 'cursor-not-allowed bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500'
+                : 'cursor-pointer bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white'
+            }`}
           >
-            {isOutOfStock ? 'Sold Out' : 'Purchase Vehicle'}
+            {isOutOfStock ? 'UNAVAILABLE' : 'PURCHASE VEHICLE'}
           </button>
 
-          {/* Admin Management Buttons */}
           {isAdmin && (
-            <div className="mt-4 flex gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onRestock(vehicle._id)}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald-500/10 py-2 text-xs font-bold text-emerald-600 transition-colors hover:bg-emerald-500/20 cursor-pointer dark:text-emerald-400 border border-emerald-500/20"
-              >
-                <PackagePlus className="h-3.5 w-3.5" />
-                Restock
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onEdit(vehicle)}
-                className="flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 cursor-pointer dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
-                title="Edit details"
-              >
-                <Edit className="h-4 w-4" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onDelete(vehicle)}
-                className="flex items-center justify-center rounded-lg bg-red-500/10 px-3 py-2 text-red-500 transition-colors hover:bg-red-500/20 hover:text-red-600 cursor-pointer border border-red-500/20 dark:hover:text-red-400"
-                title="Delete vehicle"
-              >
-                <Trash2 className="h-4 w-4" />
-              </motion.button>
-            </div>
+            <>
+              <hr className="border-t-0 border-b border-slate-200 dark:border-slate-800" />
+              <div className="flex items-center justify-between gap-2 pt-1">
+                <button
+                  onClick={() => onEdit(vehicle)}
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-none bg-transparent py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                >
+                  <Edit className="h-3.5 w-3.5" /> Edit
+                </button>
+                <button
+                  onClick={() => onRestock(vehicle._id)}
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-none bg-transparent py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                >
+                  <PackagePlus className="h-3.5 w-3.5" /> Restock
+                </button>
+                <button
+                  onClick={() => onDelete(vehicle)}
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-none bg-transparent py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-500 transition-colors hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                >
+                  <Trash2 className="h-3.5 w-3.5" /> Delete
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
