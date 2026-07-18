@@ -1,22 +1,100 @@
 // src/pages/DashboardPage.tsx
-// Dashboard landing page layout shell integrating navigation and the search panel.
+// Core dashboard controller displaying live vehicle data, implementing search filters and inventory purchase mutations.
 
+import { useState, useEffect, useCallback } from 'react';
+import { vehiclesAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
+import VehicleCard, { type Vehicle } from '../components/VehicleCard';
+import toast from 'react-hot-toast';
+import type { AxiosError } from 'axios';
 
 export default function DashboardPage() {
   const { isAdmin } = useAuth();
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSearch = (filters: Record<string, string>) => {
-    console.log('Search filters applied:', filters);
-    // TODO: Connect to backend search API in Step 7
+  // Fetch vehicles helper
+  const loadVehicles = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await vehiclesAPI.getAll();
+      // Adjust in case database payload structure contains metadata wrapper
+      setVehicles(res.data.data ?? res.data);
+    } catch {
+      toast.error('Could not load inventory database.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadVehicles();
+  }, [loadVehicles]);
+
+  // Search/Filter Integration
+  const handleSearch = async (filters: Record<string, string>) => {
+    setLoading(true);
+    try {
+      const res = await vehiclesAPI.search(filters);
+      setVehicles(res.data.data ?? res.data);
+    } catch {
+      toast.error('Search request failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClear = () => {
-    console.log('Search filters cleared');
-    // TODO: Connect to backend reset API in Step 7
+    loadVehicles();
   };
+
+  // Purchase vehicle action
+  const handlePurchase = async (id: string) => {
+    try {
+      await vehiclesAPI.purchase(id);
+      toast.success('Vehicle purchased successfully! 🎉');
+      loadVehicles();
+    } catch (err) {
+      const axiosErr = err as AxiosError<{ message?: string }>;
+      toast.error(axiosErr.response?.data?.message ?? 'Purchase transaction failed.');
+    }
+  };
+
+  // Placeholder actions for Admin Modals (Fully built in Step 8)
+  const handleRestockClick = (id: string) => {
+    console.log('Restock requested for ID:', id);
+    // TODO: Display restock modal in Step 8
+  };
+
+  const handleEditClick = (vehicle: Vehicle) => {
+    console.log('Edit requested for vehicle:', vehicle);
+    // TODO: Display edit modal in Step 8
+  };
+
+  const handleDeleteClick = async (id: string) => {
+    if (!window.confirm('Are you sure you want to remove this vehicle from inventory?')) return;
+    try {
+      await vehiclesAPI.remove(id);
+      toast.success('Vehicle removed successfully.');
+      loadVehicles();
+    } catch (err) {
+      const axiosErr = err as AxiosError<{ message?: string }>;
+      toast.error(axiosErr.response?.data?.message ?? 'Delete request failed.');
+    }
+  };
+
+  // Premium Skeleton Card component
+  const SkeletonCard = () => (
+    <div className="animate-pulse rounded-2xl border border-slate-800 bg-slate-900/20 p-6">
+      <div className="mb-4 h-1.5 w-full rounded bg-slate-800" />
+      <div className="mb-2 h-6 w-3/4 rounded bg-slate-800" />
+      <div className="mb-4 h-4 w-1/3 rounded bg-slate-800" />
+      <div className="mb-6 h-4 w-1/2 rounded bg-slate-800" />
+      <div className="h-11 w-full rounded-xl bg-slate-800" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-bg-dark">
@@ -50,10 +128,35 @@ export default function DashboardPage() {
           <SearchBar onSearch={handleSearch} onClear={handleClear} />
         </div>
 
-        {/* Dashboard Grid Shell Placeholder */}
-        <div className="rounded-2xl border border-dashed border-slate-700 p-12 text-center text-text-secondary">
-          <p className="text-lg">Inventory grid loading placeholder…</p>
-        </div>
+        {/* Inventory Layout */}
+        {loading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, idx) => (
+              <SkeletonCard key={idx} />
+            ))}
+          </div>
+        ) : vehicles.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-800/80 bg-slate-900/10 py-16 px-4 text-center">
+            <span className="text-5xl mb-4" role="img" aria-label="empty-garage">🚙</span>
+            <h3 className="text-lg font-bold text-white">No vehicles found</h3>
+            <p className="mt-1 text-sm text-text-secondary">
+              Adjust your filter parameters or search terms.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {vehicles.map((vehicle) => (
+              <VehicleCard
+                key={vehicle._id}
+                vehicle={vehicle}
+                onPurchase={handlePurchase}
+                onRestock={handleRestockClick}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
