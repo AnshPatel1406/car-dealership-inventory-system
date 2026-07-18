@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.tsx
-// Core dashboard controller displaying live vehicle data, implementing search filters and inventory purchase mutations.
+// Core dashboard controller displaying live vehicle data, implementing search filters, inventory purchase, and administrative CRUD operations.
 
 import { useState, useEffect, useCallback } from 'react';
 import { vehiclesAPI } from '../services/api';
@@ -7,6 +7,8 @@ import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import VehicleCard, { type Vehicle } from '../components/VehicleCard';
+import VehicleFormModal from '../components/VehicleFormModal';
+import RestockModal from '../components/RestockModal';
 import toast from 'react-hot-toast';
 import type { AxiosError } from 'axios';
 
@@ -15,12 +17,17 @@ export default function DashboardPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal Visibility States
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+  const [isRestockModalOpen, setIsRestockModalOpen] = useState(false);
+  const [activeRestockId, setActiveRestockId] = useState<string | null>(null);
+
   // Fetch vehicles helper
   const loadVehicles = useCallback(async () => {
     setLoading(true);
     try {
       const res = await vehiclesAPI.getAll();
-      // Adjust in case database payload structure contains metadata wrapper
       setVehicles(res.data.data ?? res.data);
     } catch {
       toast.error('Could not load inventory database.');
@@ -62,15 +69,55 @@ export default function DashboardPage() {
     }
   };
 
-  // Placeholder actions for Admin Modals (Fully built in Step 8)
+  // Add or Edit Submission Handler
+  const handleVehicleFormSubmit = async (data: {
+    make: string;
+    model: string;
+    category: string;
+    price: number;
+    quantity: number;
+  }) => {
+    try {
+      if (editingVehicle) {
+        await vehiclesAPI.update(editingVehicle._id, data);
+        toast.success('Vehicle specifications updated successfully.');
+      } else {
+        await vehiclesAPI.create(data);
+        toast.success('Vehicle registered into inventory database.');
+      }
+      setIsVehicleModalOpen(false);
+      setEditingVehicle(null);
+      loadVehicles();
+    } catch (err) {
+      const axiosErr = err as AxiosError<{ message?: string }>;
+      toast.error(axiosErr.response?.data?.message ?? 'Failed to update vehicle record.');
+    }
+  };
+
+  // Restock Submission Handler
+  const handleRestockSubmit = async (amountToAdd: number) => {
+    if (!activeRestockId) return;
+    try {
+      await vehiclesAPI.restock(activeRestockId, amountToAdd);
+      toast.success(`Successfully added ${amountToAdd} units to stock.`);
+      setIsRestockModalOpen(false);
+      setActiveRestockId(null);
+      loadVehicles();
+    } catch (err) {
+      const axiosErr = err as AxiosError<{ message?: string }>;
+      toast.error(axiosErr.response?.data?.message ?? 'Restock transaction failed.');
+    }
+  };
+
+  // Click Trigger Helpers
   const handleRestockClick = (id: string) => {
-    console.log('Restock requested for ID:', id);
-    // TODO: Display restock modal in Step 8
+    setActiveRestockId(id);
+    setIsRestockModalOpen(true);
   };
 
   const handleEditClick = (vehicle: Vehicle) => {
-    console.log('Edit requested for vehicle:', vehicle);
-    // TODO: Display edit modal in Step 8
+    setEditingVehicle(vehicle);
+    setIsVehicleModalOpen(true);
   };
 
   const handleDeleteClick = async (id: string) => {
@@ -116,6 +163,10 @@ export default function DashboardPage() {
 
           {isAdmin && (
             <button
+              onClick={() => {
+                setEditingVehicle(null);
+                setIsVehicleModalOpen(true);
+              }}
               className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 cursor-pointer border-none"
             >
               + Add Vehicle
@@ -158,6 +209,26 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      {/* Admin Overlays */}
+      <VehicleFormModal
+        isOpen={isVehicleModalOpen}
+        onClose={() => {
+          setIsVehicleModalOpen(false);
+          setEditingVehicle(null);
+        }}
+        onSubmit={handleVehicleFormSubmit}
+        editingVehicle={editingVehicle}
+      />
+
+      <RestockModal
+        isOpen={isRestockModalOpen}
+        onClose={() => {
+          setIsRestockModalOpen(false);
+          setActiveRestockId(null);
+        }}
+        onSubmit={handleRestockSubmit}
+      />
     </div>
   );
 }
