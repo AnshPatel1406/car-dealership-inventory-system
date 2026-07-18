@@ -9,6 +9,9 @@ let mongoServer: MongoMemoryServer;
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   await mongoose.connect(mongoServer.getUri());
+  // Ensure all Mongoose indexes (e.g. unique email) are built before tests run.
+  // mongodb-memory-server doesn't guarantee index creation otherwise.
+  await User.syncIndexes();
 });
 
 afterEach(async () => {
