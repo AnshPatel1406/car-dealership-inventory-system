@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IVehicle {
+  _id: mongoose.Types.ObjectId;
   make: string;
   model: string;
   category: "Sedan" | "SUV" | "Truck" | "Hatchback" | "Coupe" | "Convertible" | "Van" | "Electric";

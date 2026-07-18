@@ -12,7 +12,7 @@ import {
   searchVehicles,
   updateVehicle,
   deleteVehicle,
-} from "./vehicle.service"; // Not implemented yet
+} from "./vehicle.service";
 
 let mongoServer: MongoMemoryServer;
 
