@@ -73,8 +73,8 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md">
         {/* Brand */}
-        <div className="mb-8 text-center">
-          <span className="text-5xl" role="img" aria-label="car">🚗</span>
+        <div className="mb-8 text-center flex flex-col items-center">
+          <img src="/logo.png" alt="CarVault Logo" className="h-40 w-auto object-contain" />
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
             CarVault
           </h1>

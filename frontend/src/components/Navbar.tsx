@@ -21,7 +21,7 @@ export default function Navbar() {
           onClick={() => navigate('/')}
           className="flex items-center gap-2 border-none bg-transparent text-xl font-bold tracking-tight text-white hover:opacity-85 cursor-pointer"
         >
-          <span className="text-2xl" role="img" aria-label="car">🚗</span>
+          <img src="/logo.png" alt="CarVault Logo" className="h-16 w-auto object-contain" />
           <span>CarVault</span>
           {isAdmin && (
             <span className="ml-2 rounded-full bg-indigo-600 px-2.5 py-0.5 text-xs font-semibold text-white">
