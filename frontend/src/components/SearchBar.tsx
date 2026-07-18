@@ -2,6 +2,8 @@
 // Modern search and filter panel using grid layouts and glassmorphism.
 
 import { useState } from 'react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface SearchBarProps {
   onSearch: (filters: Record<string, string>) => void;
@@ -41,15 +43,19 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
     'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-white dark:placeholder-slate-500';
 
   return (
-    <form
+    <motion.form
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
       onSubmit={handleSearch}
-      className="rounded-2xl border border-slate-200 bg-white/60 p-6 backdrop-blur-xl shadow-lg dark:border-slate-700/60 dark:bg-slate-900/40"
+      className="sticky top-20 z-40 rounded-2xl border border-slate-200 bg-white/80 p-4 backdrop-blur-xl shadow-lg shadow-slate-200/50 dark:border-slate-800 dark:bg-[#09090b]/80 dark:shadow-none"
     >
-      <div className="mb-4 flex items-center gap-2">
-        <span className="text-xl" role="img" aria-label="search">🔍</span>
-        <h2 className="text-lg font-bold text-slate-900 tracking-wide dark:text-white">
-          Filter Inventory
-        </h2>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="h-5 w-5 text-indigo-500" />
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+            Command Palette
+          </h2>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
@@ -116,21 +122,23 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-3 justify-end">
+      <div className="mt-4 flex flex-wrap gap-2 justify-end">
         <button
           type="button"
           onClick={handleClear}
-          className="rounded-xl border border-slate-300 bg-transparent px-6 py-2.5 text-sm font-semibold text-slate-600 hover:border-slate-400 hover:text-slate-900 cursor-pointer dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
+          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 cursor-pointer dark:border-slate-800 dark:bg-[#09090b] dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
         >
-          Clear Filters
+          <X className="h-4 w-4" />
+          Clear
         </button>
         <button
           type="submit"
-          className="rounded-xl bg-indigo-600 px-7 py-2.5 text-sm font-bold text-white hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer border-none"
+          className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-bold text-white transition-all hover:bg-indigo-500 hover:shadow-md hover:shadow-indigo-500/20 cursor-pointer border-none"
         >
-          Apply Filters
+          <Search className="h-4 w-4" />
+          Search
         </button>
       </div>
-    </form>
+    </motion.form>
   );
 }
