@@ -1,0 +1,52 @@
+// src/vehicles/vehicle.validator.ts
+// Zod schemas for validating vehicle input data.
+
+import { z } from "zod";
+
+const vehicleCategories = [
+  "Sedan",
+  "SUV",
+  "Truck",
+  "Hatchback",
+  "Coupe",
+  "Convertible",
+  "Van",
+  "Electric",
+] as const;
+
+export const createVehicleSchema = z.object({
+  make: z
+    .string()
+    .trim()
+    .min(1, "Make is required")
+    .max(100, "Make cannot exceed 100 characters"),
+
+  model: z
+    .string()
+    .trim()
+    .min(1, "Model is required")
+    .max(100, "Model cannot exceed 100 characters"),
+
+  category: z.enum(vehicleCategories, {
+    message: "Invalid category",
+  }),
+
+  price: z.number().min(0, "Price cannot be less than 0"),
+
+  quantity: z
+    .number()
+    .int("Quantity must be an integer")
+    .min(0, "Quantity cannot be less than 0")
+    .optional(),
+});
+
+export const updateVehicleSchema = createVehicleSchema.partial();
+
+export const searchVehicleSchema = z.object({
+  make: z.string().optional(),
+  category: z.enum(vehicleCategories).optional(),
+});
+
+export type CreateVehicleInput = z.infer<typeof createVehicleSchema>;
+export type UpdateVehicleInput = z.infer<typeof updateVehicleSchema>;
+export type SearchVehicleInput = z.infer<typeof searchVehicleSchema>;

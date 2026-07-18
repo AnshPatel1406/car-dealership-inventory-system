@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./auth/auth.routes";
+import vehicleRoutes from "./vehicles/vehicle.routes";
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/vehicles", vehicleRoutes);
 
 export default app;
