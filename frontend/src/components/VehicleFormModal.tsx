@@ -61,18 +61,18 @@ export default function VehicleFormModal({
     });
   };
 
-  const labelStyle = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-400';
+  const labelStyle = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400';
   const inputStyle =
-    'w-full rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20';
+    'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900/60 dark:text-white dark:placeholder-slate-500';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/90 shadow-2xl backdrop-blur-xl transition-all">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm dark:bg-black/60">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl backdrop-blur-xl transition-all dark:border-slate-700/60 dark:bg-slate-900/90">
         {/* Accent Top Bar */}
         <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 to-indigo-600" />
 
         <div className="p-6">
-          <h2 className="text-xl font-bold text-white tracking-wide mb-5">
+          <h2 className="text-xl font-bold text-slate-900 tracking-wide mb-5 dark:text-white">
             {editingVehicle ? '✏️ Edit Vehicle Specifications' : '🚗 Register New Vehicle'}
           </h2>
 
@@ -114,7 +114,7 @@ export default function VehicleFormModal({
                 className={`${inputStyle} appearance-none cursor-pointer`}
               >
                 {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat} className="bg-slate-950">
+                  <option key={cat} value={cat} className="bg-white dark:bg-slate-950">
                     {cat}
                   </option>
                 ))}
@@ -138,11 +138,11 @@ export default function VehicleFormModal({
             {/* Quantity Stepper */}
             <div>
               <label className={labelStyle}>Quantity</label>
-              <div className="flex items-center rounded-xl border border-slate-700 bg-slate-900/60 overflow-hidden">
+              <div className="flex items-center rounded-xl border border-slate-300 bg-slate-50 overflow-hidden dark:border-slate-700 dark:bg-slate-900/60">
                 <button
                   type="button"
                   onClick={() => setQuantity(String(Math.max(0, Number(quantity) - 1)))}
-                  className="px-5 py-3.5 text-xl font-bold text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer border-none bg-transparent"
+                  className="px-5 py-3.5 text-xl font-bold text-slate-600 hover:bg-slate-200 hover:text-slate-900 cursor-pointer border-none bg-transparent dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 >
                   −
                 </button>
@@ -150,26 +150,24 @@ export default function VehicleFormModal({
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  min="0"
-                  required
-                  className="flex-1 border-none bg-transparent px-2 py-3.5 text-center text-lg font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-full bg-transparent py-3 text-center text-lg font-bold text-slate-900 focus:outline-none dark:text-white"
                 />
                 <button
                   type="button"
-                  onClick={() => setQuantity(String(Number(quantity || 0) + 1))}
-                  className="px-5 py-3.5 text-xl font-bold text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer border-none bg-transparent"
+                  onClick={() => setQuantity(String(Number(quantity) + 1))}
+                  className="px-5 py-3.5 text-xl font-bold text-slate-600 hover:bg-slate-200 hover:text-slate-900 cursor-pointer border-none bg-transparent dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            {/* Form Actions */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+            {/* Actions */}
+            <div className="mt-8 flex justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800/80">
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl border border-slate-700 bg-transparent px-5 py-2.5 text-sm font-semibold text-slate-300 hover:border-slate-500 hover:text-white cursor-pointer"
+                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer border-none bg-transparent dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
               >
                 Cancel
               </button>

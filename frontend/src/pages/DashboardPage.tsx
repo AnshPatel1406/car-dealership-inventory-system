@@ -145,27 +145,27 @@ export default function DashboardPage() {
 
   // Premium Skeleton Card component
   const SkeletonCard = () => (
-    <div className="animate-pulse rounded-2xl border border-slate-800 bg-slate-900/20 p-6">
-      <div className="mb-4 h-1.5 w-full rounded bg-slate-800" />
-      <div className="mb-2 h-6 w-3/4 rounded bg-slate-800" />
-      <div className="mb-4 h-4 w-1/3 rounded bg-slate-800" />
-      <div className="mb-6 h-4 w-1/2 rounded bg-slate-800" />
-      <div className="h-11 w-full rounded-xl bg-slate-800" />
+    <div className="animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900/20">
+      <div className="mb-4 h-1.5 w-full rounded bg-slate-300 dark:bg-slate-800" />
+      <div className="mb-2 h-6 w-3/4 rounded bg-slate-300 dark:bg-slate-800" />
+      <div className="mb-4 h-4 w-1/3 rounded bg-slate-300 dark:bg-slate-800" />
+      <div className="mb-6 h-4 w-1/2 rounded bg-slate-300 dark:bg-slate-800" />
+      <div className="h-11 w-full rounded-xl bg-slate-300 dark:bg-slate-800" />
     </div>
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg-dark">
+    <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-[#0b0f19]">
       <Navbar />
 
       <main className="mx-auto max-w-7xl px-6 py-8">
         {/* Page Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               {isAdmin ? 'Admin Inventory Dashboard' : 'Available Vehicles'}
             </h1>
-            <p className="mt-1 text-sm text-text-secondary">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               {isAdmin
                 ? 'Manage, restock, update, and track vehicle inventory records.'
                 : 'Browse our catalog and purchase your next vehicle.'}
@@ -198,10 +198,10 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : vehicles.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-800/80 bg-slate-900/10 py-16 px-4 text-center">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 py-16 px-4 text-center dark:border-slate-800/80 dark:bg-slate-900/10">
             <span className="text-5xl mb-4" role="img" aria-label="empty-garage">🚙</span>
-            <h3 className="text-lg font-bold text-white">No vehicles found</h3>
-            <p className="mt-1 text-sm text-text-secondary">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">No vehicles found</h3>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Adjust your filter parameters or search terms.
             </p>
           </div>

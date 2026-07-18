@@ -75,19 +75,19 @@ export default function LoginPage() {
         {/* Brand */}
         <div className="mb-8 text-center flex flex-col items-center">
           <img src="/logo.png" alt="CarVault Logo" className="h-40 w-auto object-contain" />
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
             CarVault
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
             Premium Car Dealership Inventory
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-slate-700/60 bg-slate-900/70 p-8 shadow-2xl backdrop-blur-xl">
+        <div className="rounded-2xl border border-slate-200 bg-white/70 p-8 shadow-2xl backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/70">
 
           {/* Tab switcher */}
-          <div className="mb-6 flex rounded-xl bg-slate-800 p-1">
+          <div className="mb-6 flex rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
             {(['login', 'register'] as Tab[]).map((t) => (
               <button
                 key={t}
@@ -95,7 +95,7 @@ export default function LoginPage() {
                 onClick={() => switchTab(t)}
                 className={`flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-all cursor-pointer border-none ${tab === t
                     ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                   }`}
               >
                 {t}
@@ -109,7 +109,7 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="name"
-                  className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400"
+                  className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400"
                 >
                   Full Name
                 </label>
@@ -120,7 +120,7 @@ export default function LoginPage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="John Doe"
                   required
-                  className="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
                 />
               </div>
             )}
@@ -128,7 +128,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400"
+                className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400"
               >
                 Email
               </label>
@@ -139,14 +139,14 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-400"
+                className="mb-1 block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400"
               >
                 Password
               </label>
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
               />
               {tab === 'register' && (
                 <p className="mt-1.5 text-xs text-slate-500">

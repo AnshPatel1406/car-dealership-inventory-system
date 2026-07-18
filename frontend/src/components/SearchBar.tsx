@@ -38,16 +38,16 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
   };
 
   const inputStyle =
-    'w-full rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20';
+    'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-white dark:placeholder-slate-500';
 
   return (
     <form
       onSubmit={handleSearch}
-      className="rounded-2xl border border-slate-700/60 bg-slate-900/40 p-6 backdrop-blur-xl shadow-lg"
+      className="rounded-2xl border border-slate-200 bg-white/60 p-6 backdrop-blur-xl shadow-lg dark:border-slate-700/60 dark:bg-slate-900/40"
     >
       <div className="mb-4 flex items-center gap-2">
         <span className="text-xl" role="img" aria-label="search">🔍</span>
-        <h2 className="text-lg font-bold text-white tracking-wide">
+        <h2 className="text-lg font-bold text-slate-900 tracking-wide dark:text-white">
           Filter Inventory
         </h2>
       </div>
@@ -82,9 +82,9 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
             onChange={(e) => setCategory(e.target.value)}
             className={`${inputStyle} appearance-none cursor-pointer`}
           >
-            <option value="" className="bg-slate-900">All Categories</option>
+            <option value="" className="bg-white dark:bg-slate-900">All Categories</option>
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat} className="bg-slate-900">
+              <option key={cat} value={cat} className="bg-white dark:bg-slate-900">
                 {cat}
               </option>
             ))}
@@ -120,7 +120,7 @@ export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
         <button
           type="button"
           onClick={handleClear}
-          className="rounded-xl border border-slate-700 bg-transparent px-6 py-2.5 text-sm font-semibold text-slate-300 hover:border-slate-500 hover:text-white cursor-pointer"
+          className="rounded-xl border border-slate-300 bg-transparent px-6 py-2.5 text-sm font-semibold text-slate-600 hover:border-slate-400 hover:text-slate-900 cursor-pointer dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white"
         >
           Clear Filters
         </button>

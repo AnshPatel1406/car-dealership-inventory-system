@@ -19,12 +19,12 @@ export default function DeleteConfirmModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-0">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity dark:bg-slate-950/80"
         onClick={onClose}
       />
 
       {/* Modal Content */}
-      <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900 shadow-2xl transition-all sm:my-8">
+      <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl transition-all sm:my-8 dark:border-slate-700/60 dark:bg-slate-900">
         {/* Header with Danger Style */}
         <div className="border-b border-red-500/20 bg-red-500/10 px-6 py-5">
           <div className="flex items-center gap-3">
@@ -33,15 +33,15 @@ export default function DeleteConfirmModal({
                 ⚠️
               </span>
             </div>
-            <h3 className="text-lg font-bold text-white">Delete Inventory</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Delete Inventory</h3>
           </div>
         </div>
 
         <div className="px-6 py-5">
-          <p className="text-sm text-slate-300">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Are you sure you want to completely remove{' '}
             {vehicleInfo ? (
-              <span className="font-bold text-white">
+              <span className="font-bold text-slate-900 dark:text-white">
                 {vehicleInfo.make} {vehicleInfo.model}
               </span>
             ) : (
@@ -55,11 +55,11 @@ export default function DeleteConfirmModal({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 border-t border-slate-800 bg-slate-800/50 px-6 py-4">
+        <div className="flex justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4 dark:border-slate-800 dark:bg-slate-800/50">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg bg-transparent px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer border-none"
+            className="cursor-pointer rounded-lg border-none bg-transparent px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Cancel
           </button>

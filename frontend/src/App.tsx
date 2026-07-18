@@ -4,6 +4,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 
@@ -45,6 +46,8 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const { theme } = useTheme();
+
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -53,9 +56,9 @@ export default function App() {
           toastOptions={{
             duration: 3500,
             style: {
-              background: '#151f32',
-              color: '#f8fafc',
-              border: '1px solid #334155',
+              background: theme === 'dark' ? '#151f32' : '#ffffff',
+              color: theme === 'dark' ? '#f8fafc' : '#0f172a',
+              border: theme === 'dark' ? '1px solid #334155' : '1px solid #e2e8f0',
               borderRadius: '12px',
               fontSize: '14px',
               padding: '12px 16px',
