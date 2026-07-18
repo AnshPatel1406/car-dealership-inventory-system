@@ -3,17 +3,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "./user.model";
-
-interface RegisterInput {
-    name: string;
-    email: string;
-    password: string;
-}
-
-interface LoginInput {
-    email: string;
-    password: string;
-}
+import type { RegisterInput, LoginInput } from "./auth.validator";
 
 /**
  * Registers a new user — hashes password, saves to MongoDB,
