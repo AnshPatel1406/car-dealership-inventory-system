@@ -119,21 +119,21 @@ export default function VehicleCard({
               <div className="flex items-center justify-between gap-2 pt-1">
                 <button
                   onClick={() => onEdit(vehicle)}
-                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-none bg-transparent py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-transparent dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800/50 dark:hover:text-white"
                 >
-                  <Edit className="h-3.5 w-3.5" /> Edit
+                  <Edit className="h-3 w-3" /> Edit
                 </button>
                 <button
                   onClick={() => onRestock(vehicle._id)}
-                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-none bg-transparent py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-all hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-600 dark:border-slate-800 dark:bg-transparent dark:text-slate-400 dark:hover:border-emerald-900/50 dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400"
                 >
-                  <PackagePlus className="h-3.5 w-3.5" /> Restock
+                  <PackagePlus className="h-3 w-3" /> Restock
                 </button>
                 <button
                   onClick={() => onDelete(vehicle)}
-                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-none bg-transparent py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-500 transition-colors hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white py-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-all hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-slate-800 dark:bg-transparent dark:text-slate-400 dark:hover:border-red-900/50 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                 >
-                  <Trash2 className="h-3.5 w-3.5" /> Delete
+                  <Trash2 className="h-3 w-3" /> Delete
                 </button>
               </div>
             </>
