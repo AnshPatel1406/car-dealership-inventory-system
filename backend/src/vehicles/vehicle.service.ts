@@ -83,3 +83,38 @@ export async function deleteVehicle(id: string): Promise<boolean> {
   const result = await Vehicle.findByIdAndDelete(id);
   return result !== null;
 }
+
+/**
+ * Purchases a vehicle by decrementing its quantity by 1.
+ * Throws an error if the vehicle is not found or is out of stock.
+ */
+export async function purchaseVehicle(id: string): Promise<IVehicle> {
+  const vehicle = await Vehicle.findById(id);
+  if (!vehicle) {
+    throw new Error("Vehicle not found");
+  }
+  if (vehicle.quantity <= 0) {
+    throw new Error("Vehicle is out of stock");
+  }
+  
+  vehicle.quantity -= 1;
+  return await vehicle.save();
+}
+
+/**
+ * Restocks a vehicle by incrementing its quantity by a given amount.
+ * Throws an error if the vehicle is not found or amount is invalid (<= 0).
+ */
+export async function restockVehicle(id: string, amount: number): Promise<IVehicle> {
+  if (amount <= 0) {
+    throw new Error("Restock quantity must be greater than 0");
+  }
+
+  const vehicle = await Vehicle.findById(id);
+  if (!vehicle) {
+    throw new Error("Vehicle not found");
+  }
+
+  vehicle.quantity += amount;
+  return await vehicle.save();
+}
