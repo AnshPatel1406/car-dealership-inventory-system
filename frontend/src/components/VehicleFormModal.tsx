@@ -65,7 +65,7 @@ export default function VehicleFormModal({
 
   const labelStyle = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400';
   const inputStyle =
-    'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900/60 dark:text-white dark:placeholder-slate-500';
+    'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none dark:border-slate-700 dark:bg-slate-900/60 dark:text-white dark:placeholder-slate-500';
 
   return (
     <AnimatePresence>
@@ -181,7 +181,7 @@ export default function VehicleFormModal({
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  className="w-full bg-transparent py-3 text-center text-lg font-bold text-slate-900 focus:outline-none dark:text-white"
+                  className="w-full bg-transparent py-3 text-center text-lg font-bold text-slate-900 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none dark:text-white"
                 />
                 <button
                   type="button"
