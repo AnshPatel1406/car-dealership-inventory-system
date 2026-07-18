@@ -76,7 +76,7 @@ export default function LoginPage() {
         <div className="mb-8 text-center">
           <span className="text-5xl" role="img" aria-label="car">🚗</span>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
-            AutoVault
+            CarVault
           </h1>
           <p className="mt-1 text-sm text-slate-400">
             Premium Car Dealership Inventory
@@ -93,11 +93,10 @@ export default function LoginPage() {
                 key={t}
                 type="button"
                 onClick={() => switchTab(t)}
-                className={`flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-all cursor-pointer border-none ${
-                  tab === t
+                className={`flex-1 rounded-lg py-2 text-sm font-semibold capitalize transition-all cursor-pointer border-none ${tab === t
                     ? 'bg-indigo-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white'
-                }`}
+                  }`}
               >
                 {t}
               </button>
