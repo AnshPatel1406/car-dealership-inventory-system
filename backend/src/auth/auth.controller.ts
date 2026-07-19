@@ -2,7 +2,7 @@
 
 import { Request, Response } from "express";
 import { registerSchema, loginSchema } from "./auth.validator";
-import { registerUser, loginUser } from "./auth.service";
+import { registerUser, loginUser, googleAuthUser } from "./auth.service";
 
 /**
  * POST /api/auth/register
@@ -85,6 +85,36 @@ export async function login(req: Request, res: Response) {
         return res.status(500).json({
             success: false,
             message: "Internal server error",
+        });
+    }
+}
+
+/**
+ * POST /api/auth/google
+ * Verifies Google credential → delegates to service → returns JWT token
+ */
+export async function googleAuth(req: Request, res: Response) {
+    try {
+        const { credential } = req.body;
+        if (!credential) {
+            return res.status(400).json({
+                success: false,
+                message: "Credential is required",
+            });
+        }
+
+        const { token } = await googleAuthUser(credential);
+
+        return res.status(200).json({
+            success: true,
+            message: "Google login successful",
+            token,
+        });
+    } catch (error) {
+        console.error("Google auth error:", error);
+        return res.status(401).json({
+            success: false,
+            message: "Invalid Google credential",
         });
     }
 }
