@@ -2,6 +2,7 @@
 // Request handlers for the vehicle inventory API endpoints.
 
 import { Request, Response } from "express";
+import { Vehicle } from "./vehicle.model";
 import {
   createVehicle,
   getAllVehicles,
@@ -295,7 +296,7 @@ export async function importVehicles(req: Request, res: Response) {
     }
 
     const rows = lines.slice(1);
-    let addedCount = 0;
+    let processedCount = 0;
     const errors: any[] = [];
     const creatorId = req.user?.userId;
 
@@ -325,11 +326,22 @@ export async function importVehicles(req: Request, res: Response) {
       }
 
       try {
-        await createVehicle({
-          ...parsed.data,
-          createdBy: creatorId ? new Object(creatorId) as any : undefined,
+        const existingVehicle = await Vehicle.findOne({
+          make: { $regex: new RegExp(`^${parsed.data.make}$`, "i") },
+          model: { $regex: new RegExp(`^${parsed.data.model}$`, "i") },
+          category: parsed.data.category
         });
-        addedCount++;
+
+        if (existingVehicle) {
+          existingVehicle.quantity += (parsed.data.quantity ?? 1);
+          await existingVehicle.save();
+        } else {
+          await createVehicle({
+            ...parsed.data,
+            createdBy: creatorId ? new Object(creatorId) as any : undefined,
+          });
+        }
+        processedCount++;
       } catch (e: any) {
          errors.push({ row: i + 2, message: e.message || "Failed to save to database" });
       }
@@ -337,7 +349,7 @@ export async function importVehicles(req: Request, res: Response) {
 
     return res.status(200).json({
       success: true,
-      message: `Import complete. Added ${addedCount} vehicles.`,
+      message: `Import complete. Processed ${processedCount} vehicles.`,
       errors: errors.length > 0 ? errors : undefined
     });
   } catch (error) {
