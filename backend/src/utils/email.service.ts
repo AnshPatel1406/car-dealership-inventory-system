@@ -11,19 +11,24 @@ let transporter: nodemailer.Transporter | null = null;
 async function getTransporter() {
   if (transporter) return transporter;
 
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, GMAIL_USER, GMAIL_APP_PASSWORD } = process.env;
 
-  if (SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS) {
+  const user = SMTP_USER || GMAIL_USER;
+  const pass = SMTP_PASS || GMAIL_APP_PASSWORD;
+  const host = SMTP_HOST || (GMAIL_USER ? 'smtp.gmail.com' : undefined);
+  const port = SMTP_PORT ? Number(SMTP_PORT) : (GMAIL_USER ? 465 : undefined);
+
+  if (host && port && user && pass) {
     transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: Number(SMTP_PORT),
-      secure: Number(SMTP_PORT) === 465, // true for 465, false for other ports
+      host: host,
+      port: port,
+      secure: port === 465, // true for 465, false for other ports
       auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS,
+        user: user,
+        pass: pass,
       },
     });
-    console.log(`[Email Service] Configured SMTP transporter for ${SMTP_HOST}`);
+    console.log(`[Email Service] Configured SMTP transporter for ${host}`);
   } else {
     console.log('[Email Service] Missing SMTP credentials in .env. Falling back to Ethereal Test Account.');
     const testAccount = await nodemailer.createTestAccount();
