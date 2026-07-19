@@ -20,6 +20,7 @@ import {
   searchVehicleSchema,
   restockVehicleSchema,
 } from "./vehicle.validator";
+import { sendPurchaseReceipt } from "../utils/email.service";
 
 /**
  * Adds a new vehicle (Admin only).
@@ -204,6 +205,13 @@ export async function buyVehicle(req: Request, res: Response) {
   try {
     const { id } = req.params as { id: string };
     const vehicle = await purchaseVehicle(id);
+
+    // Try to send the receipt asynchronously, without blocking the response
+    if (req.user?.email) {
+      sendPurchaseReceipt(req.user.email, vehicle).catch((err) => {
+        console.error(`[buyVehicle] Failed to send receipt to ${req.user?.email}:`, err);
+      });
+    }
 
     return res.status(200).json({
       success: true,

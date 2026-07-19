@@ -13,7 +13,7 @@ import jwt from "jsonwebtoken";
 
 // Mock the email service so we don't send real emails during tests
 vi.mock("../utils/email.service", () => ({
-  sendPurchaseReceipt: vi.fn(),
+  sendPurchaseReceipt: vi.fn().mockResolvedValue({}),
 }));
 
 let mongoServer: MongoMemoryServer;
