@@ -61,6 +61,12 @@ export const vehiclesAPI = {
 
   restock: (id: string, quantity: number) =>
     api.post(`/vehicles/${id}/restock`, { quantity }),
+
+  exportCSV: () =>
+    api.get('/vehicles/export', { responseType: 'blob' }),
+
+  importCSV: (csvText: string) =>
+    api.post('/vehicles/import', csvText, { headers: { 'Content-Type': 'text/csv' } }),
 };
 
 export default api;

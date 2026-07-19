@@ -1,11 +1,11 @@
 // src/pages/DashboardPage.tsx
 // Core dashboard controller displaying live vehicle data, implementing search filters, inventory purchase, and administrative CRUD operations.
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { vehiclesAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Database, AlertCircle, Banknote, PackageSearch } from 'lucide-react';
+import { Plus, Database, AlertCircle, Banknote, PackageSearch, Download, Upload } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import VehicleCard, { type Vehicle } from '../components/VehicleCard';
@@ -20,6 +20,7 @@ export default function DashboardPage() {
   const { isAdmin } = useAuth();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Modal Visibility States
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
@@ -145,6 +146,48 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDownloadStock = async () => {
+    try {
+      const response = await vehiclesAPI.exportCSV();
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'inventory.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Inventory downloaded successfully');
+    } catch (err) {
+      toast.error('Failed to download inventory');
+    }
+  };
+
+  const handleUploadStock = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const response = await vehiclesAPI.importCSV(text);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        loadVehicles();
+      } else {
+        toast.error('Import failed');
+      }
+    } catch (err) {
+      const axiosErr = err as AxiosError<{ message?: string, errors?: any[] }>;
+      toast.error(axiosErr.response?.data?.message || 'Failed to import inventory');
+      if (axiosErr.response?.data?.errors) {
+        console.error('Import errors:', axiosErr.response.data.errors);
+      }
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   // Compute Stats for Admin
   const totalVehicles = vehicles.length;
   const totalValue = useMemo(() => vehicles.reduce((sum, v) => sum + (v.price * v.quantity), 0), [vehicles]);
@@ -180,18 +223,47 @@ export default function DashboardPage() {
           </div>
 
           {isAdmin && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                setEditingVehicle(null);
-                setIsVehicleModalOpen(true);
-              }}
-              className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 cursor-pointer border-none"
-            >
-              <Plus className="h-5 w-5" />
-              Add Vehicle
-            </motion.button>
+            <div className="flex flex-wrap items-center gap-3">
+              <input 
+                type="file" 
+                accept=".csv" 
+                ref={fileInputRef} 
+                onChange={handleUploadStock} 
+                className="hidden" 
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 rounded-xl bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-500/20 hover:bg-slate-700 cursor-pointer border-none"
+              >
+                <Upload className="h-5 w-5" />
+                Upload Stock
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDownloadStock}
+                className="flex items-center gap-2 rounded-xl bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-500/20 hover:bg-slate-700 cursor-pointer border-none"
+              >
+                <Download className="h-5 w-5" />
+                Download Stock
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setEditingVehicle(null);
+                  setIsVehicleModalOpen(true);
+                }}
+                className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 cursor-pointer border-none"
+              >
+                <Plus className="h-5 w-5" />
+                Add Vehicle
+              </motion.button>
+            </div>
           )}
         </div>
 
