@@ -404,3 +404,78 @@ describe("POST /api/vehicles/:id/restock", () => {
     expect(res.status).toBe(404);
   });
 });
+
+// ─── Bulk Import & Export ────────────────────────────────────────────────
+describe("GET /api/vehicles/export", () => {
+  it("should export inventory as CSV for admin", async () => {
+    // Add a test vehicle first
+    await Vehicle.create({
+      make: "Toyota",
+      model: "Camry",
+      category: "Sedan",
+      price: 25000,
+      quantity: 5,
+    });
+
+    const response = await request(app)
+      .get("/api/vehicles/export")
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.header["content-type"]).toContain("text/csv");
+    expect(response.text).toContain("Make,Model,Category,Price,Quantity");
+    expect(response.text).toContain("Toyota");
+  });
+
+  it("should reject non-admin users from exporting", async () => {
+    const response = await request(app)
+      .get("/api/vehicles/export")
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.status).toBe(403);
+  });
+});
+
+describe("POST /api/vehicles/import", () => {
+  it("should import vehicles from CSV for admin", async () => {
+    const csvData = "Make,Model,Category,Price,Quantity\nHonda,Civic,Sedan,20000,10\nBMW,X5,SUV,60000,2";
+
+    const response = await request(app)
+      .post("/api/vehicles/import")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Content-Type", "text/csv")
+      .send(csvData);
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.message).toContain("Added 2 vehicles");
+
+    const vehicles = await Vehicle.find({ make: { $in: ["Honda", "BMW"] } });
+    expect(vehicles.length).toBe(2);
+  });
+
+  it("should return validation errors for invalid CSV rows", async () => {
+    const csvData = "Make,Model,Category,Price,Quantity\nHonda,Civic,InvalidCategory,20000,10";
+
+    const response = await request(app)
+      .post("/api/vehicles/import")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Content-Type", "text/csv")
+      .send(csvData);
+
+    expect(response.status).toBe(200);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body.errors.length).toBe(1);
+    expect(response.body.errors[0].message).toContain("Validation failed");
+  });
+
+  it("should reject non-admin users from importing", async () => {
+    const response = await request(app)
+      .post("/api/vehicles/import")
+      .set("Authorization", `Bearer ${userToken}`)
+      .set("Content-Type", "text/csv")
+      .send("Make\nHonda");
+
+    expect(response.status).toBe(403);
+  });
+});
