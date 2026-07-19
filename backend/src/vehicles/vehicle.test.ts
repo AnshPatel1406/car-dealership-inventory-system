@@ -448,10 +448,35 @@ describe("POST /api/vehicles/import", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.message).toContain("Added 2 vehicles");
+    expect(response.body.message).toContain("Processed 2 vehicles");
 
     const vehicles = await Vehicle.find({ make: { $in: ["Honda", "BMW"] } });
     expect(vehicles.length).toBe(2);
+  });
+
+  it("should merge duplicates by updating quantity of existing vehicles", async () => {
+    await Vehicle.create({
+      make: "Ford",
+      model: "Mustang",
+      category: "Coupe",
+      price: 45000,
+      quantity: 5,
+    });
+
+    const csvData = "Make,Model,Category,Price,Quantity\nFord,Mustang,Coupe,45000,10";
+
+    const response = await request(app)
+      .post("/api/vehicles/import")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Content-Type", "text/csv")
+      .send(csvData);
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+
+    const vehicles = await Vehicle.find({ make: "Ford", model: "Mustang" });
+    expect(vehicles.length).toBe(1); // Should not create a duplicate
+    expect(vehicles[0].quantity).toBe(15); // 5 existing + 10 from CSV
   });
 
   it("should return validation errors for invalid CSV rows", async () => {
