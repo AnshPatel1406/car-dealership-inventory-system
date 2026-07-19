@@ -61,7 +61,7 @@ export async function sendPurchaseReceipt(toEmail: string, vehicle: IVehicle) {
             <p style="margin: 0;"><strong>Make:</strong> ${vehicle.make}</p>
             <p style="margin: 0;"><strong>Model:</strong> ${vehicle.model}</p>
             <p style="margin: 0;"><strong>Category:</strong> ${vehicle.category}</p>
-            <p style="margin: 0;"><strong>Price Paid:</strong> $${vehicle.price.toLocaleString()}</p>
+            <p style="margin: 0;"><strong>Price Paid:</strong> ₹${vehicle.price.toLocaleString('en-IN')}</p>
           </div>
           <p>If you have any questions, please contact our support team.</p>
           <p style="color: #888; font-size: 12px; margin-top: 30px;">© ${new Date().getFullYear()} CarVault Dealership. All rights reserved.</p>
