@@ -73,7 +73,10 @@ describe("Vehicle Model", () => {
   });
 
   it("should accept all valid categories", async () => {
-    const categories = ["Sedan", "SUV", "Truck", "Hatchback", "Coupe", "Convertible", "Van", "Electric"];
+    const categories = [
+      "Sedan", "SUV", "Truck", "Hatchback", "Coupe", "Convertible", "Electric",
+      "Compact SUV", "MPV", "Premium Hatchback", "Compact Sedan", "Luxury SUV", "Luxury Sedan"
+    ];
 
     for (const category of categories) {
       const vehicle = new Vehicle({ ...validVehicle, category });

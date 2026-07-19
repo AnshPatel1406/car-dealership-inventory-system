@@ -10,7 +10,10 @@ interface SearchBarProps {
   onClear: () => void;
 }
 
-const CATEGORIES = ['Sedan', 'SUV', 'Truck', 'Coupe', 'Convertible', 'Hatchback'];
+const CATEGORIES = [
+  'Sedan', 'SUV', 'Truck', 'Coupe', 'Convertible', 'Hatchback', 'Electric',
+  'Compact SUV', 'MPV', 'Premium Hatchback', 'Compact Sedan', 'Luxury SUV', 'Luxury Sedan'
+];
 
 export default function SearchBar({ onSearch, onClear }: SearchBarProps) {
   const [make, setMake] = useState('');

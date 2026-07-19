@@ -10,8 +10,13 @@ const vehicleCategories = [
   "Hatchback",
   "Coupe",
   "Convertible",
-  "Van",
   "Electric",
+  "Compact SUV",
+  "MPV",
+  "Premium Hatchback",
+  "Compact Sedan",
+  "Luxury SUV",
+  "Luxury Sedan",
 ] as const;
 
 export const createVehicleSchema = z.object({
