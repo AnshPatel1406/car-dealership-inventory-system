@@ -28,6 +28,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  googleLogin: (credential: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -88,6 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     toast.success('Account created! Please log in.');
   };
 
+  const googleLogin = async (credential: string): Promise<void> => {
+    const res = await authAPI.googleAuth(credential);
+    setToken(res.data.token);
+    toast.success('Google login successful! 👋');
+  };
+
   const logout = (): void => {
     setToken(null);
     toast.success('Logged out successfully.');
@@ -101,6 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAdmin: user?.role === 'admin',
         isAuthenticated: !!token,
         login,
+        googleLogin,
         register,
         logout,
       }}

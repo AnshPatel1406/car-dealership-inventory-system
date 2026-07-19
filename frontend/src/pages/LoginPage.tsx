@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
 import type { AxiosError } from 'axios';
 
@@ -25,7 +26,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { login, register } = useAuth();
+  const { login, register, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const resetForm = () => {
@@ -238,6 +239,37 @@ export default function LoginPage() {
                 </>
               )}
             </motion.button>
+
+            <div className="relative mt-6 flex items-center py-2">
+              <div className="flex-grow border-t border-slate-300 dark:border-slate-700"></div>
+              <span className="shrink-0 px-4 text-xs font-medium uppercase text-slate-500">
+                or
+              </span>
+              <div className="flex-grow border-t border-slate-300 dark:border-slate-700"></div>
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <GoogleLogin
+                onSuccess={async (credentialResponse) => {
+                  if (credentialResponse.credential) {
+                    try {
+                      setLoading(true);
+                      await googleLogin(credentialResponse.credential);
+                      navigate('/');
+                    } catch (err) {
+                      const axiosErr = err as AxiosError<ApiError>;
+                      const msg = axiosErr.response?.data?.message || 'Google login failed.';
+                      toast.error(msg);
+                    } finally {
+                      setLoading(false);
+                    }
+                  }
+                }}
+                onError={() => {
+                  toast.error('Google login failed.');
+                }}
+              />
+            </div>
           </form>
         </div>
       </motion.div>

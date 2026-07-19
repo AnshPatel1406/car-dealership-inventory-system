@@ -28,6 +28,9 @@ export const authAPI = {
 
   login: (payload: { email: string; password: string }) =>
     api.post('/auth/login', payload),
+
+  googleAuth: (credential: string) =>
+    api.post('/auth/google', { credential }),
 };
 
 // ─── Vehicles ──────────────────────────────────────────────────────────────
