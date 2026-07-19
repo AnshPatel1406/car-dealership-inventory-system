@@ -1,5 +1,9 @@
 import nodemailer from 'nodemailer';
+import dns from 'node:dns';
 import { IVehicle } from '../vehicles/vehicle.model';
+
+// Railway does not support outbound IPv6. Force Node to use IPv4 for DNS resolution.
+dns.setDefaultResultOrder('ipv4first');
 
 let transporter: nodemailer.Transporter | null = null;
 
