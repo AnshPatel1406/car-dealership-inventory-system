@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [isRestockModalOpen, setIsRestockModalOpen] = useState(false);
   const [activeRestockId, setActiveRestockId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle | null>(null);
 
   // Fetch vehicles helper
@@ -147,15 +148,19 @@ export default function DashboardPage() {
     }
   };
 
-  const handleDeleteAll = async () => {
-    if (window.confirm("Are you sure you want to delete all vehicles? This action cannot be undone.")) {
-      try {
-        const res = await vehiclesAPI.removeAll();
-        toast.success(res.data.message || 'All vehicles deleted successfully');
-        loadVehicles();
-      } catch (err) {
-        toast.error('Failed to delete all vehicles');
-      }
+  const handleDeleteAll = () => {
+    setIsDeleteAllModalOpen(true);
+  };
+
+  const confirmDeleteAll = async () => {
+    try {
+      const res = await vehiclesAPI.removeAll();
+      toast.success(res.data.message || 'All vehicles deleted successfully');
+      loadVehicles();
+    } catch (err) {
+      toast.error('Failed to delete all vehicles');
+    } finally {
+      setIsDeleteAllModalOpen(false);
     }
   };
 
@@ -408,6 +413,13 @@ export default function DashboardPage() {
         }}
         onConfirm={confirmDelete}
         vehicleInfo={vehicleToDelete ? { make: vehicleToDelete.make, model: vehicleToDelete.model } : null}
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteAllModalOpen}
+        onClose={() => setIsDeleteAllModalOpen(false)}
+        onConfirm={confirmDeleteAll}
+        isDeleteAll={true}
       />
     </div>
   );

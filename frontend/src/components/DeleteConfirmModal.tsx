@@ -7,6 +7,7 @@ interface DeleteConfirmModalProps {
   onClose: () => void;
   onConfirm: () => void;
   vehicleInfo?: { make: string; model: string } | null;
+  isDeleteAll?: boolean;
 }
 
 export default function DeleteConfirmModal({
@@ -14,6 +15,7 @@ export default function DeleteConfirmModal({
   onClose,
   onConfirm,
   vehicleInfo,
+  isDeleteAll,
 }: DeleteConfirmModalProps) {
   return (
     <AnimatePresence>
@@ -48,18 +50,31 @@ export default function DeleteConfirmModal({
 
         <div className="px-6 py-5">
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Are you sure you want to completely remove{' '}
-            {vehicleInfo ? (
-              <span className="font-bold text-slate-900 dark:text-white">
-                {vehicleInfo.make} {vehicleInfo.model}
-              </span>
+            {isDeleteAll ? (
+              <>
+                Are you sure you want to completely remove{' '}
+                <span className="font-bold text-red-600 dark:text-red-400">ALL VEHICLES</span>
+                {' '}from the inventory? This action cannot be undone.
+              </>
             ) : (
-              'this vehicle'
-            )}{' '}
-            from the inventory?
+              <>
+                Are you sure you want to completely remove{' '}
+                {vehicleInfo ? (
+                  <span className="font-bold text-slate-900 dark:text-white">
+                    {vehicleInfo.make} {vehicleInfo.model}
+                  </span>
+                ) : (
+                  'this vehicle'
+                )}{' '}
+                from the inventory?
+              </>
+            )}
           </p>
           <p className="mt-2 text-xs text-red-400">
-            This action cannot be undone and will permanently delete all stock records for this vehicle.
+            {isDeleteAll 
+              ? 'This action cannot be undone and will permanently wipe the entire inventory database.'
+              : 'This action cannot be undone and will permanently delete all stock records for this vehicle.'
+            }
           </p>
         </div>
 
