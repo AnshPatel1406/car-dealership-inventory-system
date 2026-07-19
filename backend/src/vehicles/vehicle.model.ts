@@ -4,7 +4,7 @@ export interface IVehicle {
   _id: mongoose.Types.ObjectId;
   make: string;
   model: string;
-  category: "Sedan" | "SUV" | "Truck" | "Hatchback" | "Coupe" | "Convertible" | "Electric";
+  category: "Sedan" | "SUV" | "Truck" | "Hatchback" | "Coupe" | "Convertible" | "Electric" | "Compact SUV" | "MPV" | "Premium Hatchback" | "Compact Sedan" | "Luxury SUV" | "Luxury Sedan";
   price: number;
   quantity: number;
   createdBy?: mongoose.Types.ObjectId;
