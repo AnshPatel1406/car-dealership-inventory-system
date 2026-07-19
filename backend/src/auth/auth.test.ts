@@ -142,3 +142,78 @@ describe("POST /api/auth/login", () => {
     expect(response.body.success).toBe(false);
   });
 });
+
+// ─── POST /api/auth/google ──────────────────────────────────────────────────
+
+vi.mock("google-auth-library", () => {
+  const verifyIdTokenMock = vi.fn().mockImplementation((opts) => {
+    if (opts.idToken === "valid-new-user-token") {
+      return Promise.resolve({
+        getPayload: () => ({ email: "googleuser@example.com", name: "Google User" })
+      });
+    }
+    if (opts.idToken === "valid-existing-user-token") {
+      return Promise.resolve({
+        getPayload: () => ({ email: "existing@example.com", name: "Existing User" })
+      });
+    }
+    return Promise.reject(new Error("Invalid token"));
+  });
+
+  return {
+    OAuth2Client: vi.fn().mockImplementation(() => ({
+      verifyIdToken: verifyIdTokenMock
+    }))
+  };
+});
+
+describe("POST /api/auth/google", () => {
+  it("should create a new user and return JWT when token is valid but user does not exist", async () => {
+    const response = await request(app).post("/api/auth/google").send({
+      credential: "valid-new-user-token"
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.token).toBeDefined();
+
+    const userInDb = await User.findOne({ email: "googleuser@example.com" });
+    expect(userInDb).not.toBeNull();
+    expect(userInDb!.name).toBe("Google User");
+  });
+
+  it("should return JWT without creating a duplicate user when token is valid and user exists", async () => {
+    await User.create({
+      name: "Existing User",
+      email: "existing@example.com",
+      password: "somehashedpassword",
+    });
+
+    const response = await request(app).post("/api/auth/google").send({
+      credential: "valid-existing-user-token"
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.token).toBeDefined();
+
+    const users = await User.find({ email: "existing@example.com" });
+    expect(users.length).toBe(1);
+  });
+
+  it("should reject invalid google credential with 401", async () => {
+    const response = await request(app).post("/api/auth/google").send({
+      credential: "invalid-token"
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+  });
+
+  it("should require credential field", async () => {
+    const response = await request(app).post("/api/auth/google").send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+});
