@@ -4,11 +4,17 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi, beforeEach } from "vitest";
 import app from "../app";
 import { User } from "../auth/user.model";
 import { Vehicle } from "./vehicle.model";
+import * as emailService from "../utils/email.service";
 import jwt from "jsonwebtoken";
+
+// Mock the email service so we don't send real emails during tests
+vi.mock("../utils/email.service", () => ({
+  sendPurchaseReceipt: vi.fn(),
+}));
 
 let mongoServer: MongoMemoryServer;
 let userToken: string;
@@ -300,7 +306,7 @@ describe("POST /api/vehicles/:id/purchase", () => {
     expect(res.status).toBe(401);
   });
 
-  it("should allow regular user to purchase a vehicle with 200", async () => {
+  it("should allow regular user to purchase a vehicle with 200 and send an email receipt", async () => {
     const res = await request(app)
       .post(`/api/vehicles/${vehicleId}/purchase`)
       .set("Authorization", `Bearer ${userToken}`);
@@ -311,6 +317,13 @@ describe("POST /api/vehicles/:id/purchase", () => {
 
     const inDb = await Vehicle.findById(vehicleId);
     expect(inDb!.quantity).toBe(1);
+
+    // Assert that the email service was invoked
+    expect(emailService.sendPurchaseReceipt).toHaveBeenCalledTimes(1);
+    expect(emailService.sendPurchaseReceipt).toHaveBeenCalledWith(
+      "user@example.com", 
+      expect.objectContaining({ make: "Subaru", model: "Outback" })
+    );
   });
 
   it("should return 400 if vehicle is out of stock", async () => {
