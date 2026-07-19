@@ -70,7 +70,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-x-hidden overflow-y-auto px-4 py-12">
 
       {/* Ambient background glow */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -248,9 +248,15 @@ export default function LoginPage() {
               <div className="flex-grow border-t border-slate-300 dark:border-slate-700"></div>
             </div>
 
-            <div className="mt-4 flex justify-center">
-              <GoogleLogin
-                onSuccess={async (credentialResponse) => {
+            <div className="mt-4 flex justify-center w-full">
+              <div className="w-full overflow-hidden rounded-xl flex justify-center">
+                <GoogleLogin
+                  theme="outline"
+                  size="large"
+                  text="continue_with"
+                  shape="circle"
+                  width="330"
+                  onSuccess={async (credentialResponse) => {
                   if (credentialResponse.credential) {
                     try {
                       setLoading(true);
@@ -269,6 +275,7 @@ export default function LoginPage() {
                   toast.error('Google login failed.');
                 }}
               />
+              </div>
             </div>
           </form>
         </div>
