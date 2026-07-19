@@ -1,0 +1,40 @@
+ RUN  v4.1.10 C:/Users/anshh/OneDrive/Desktop/Incubyte/car-dealership-inventory-system/car-dealership-inventory-system/backend
+      Coverage enabled with v8
+
+ src/middleware/auth.middleware.test.ts (8 tests) 24ms
+ src/auth/user.model.test.ts (8 tests) 1204ms
+ src/vehicles/vehicle.model.test.ts (9 tests) 1331ms
+ src/vehicles/vehicle.service.test.ts (21 tests) 1489ms
+ src/auth/auth.service.test.ts (7 tests) 1933ms
+ src/vehicles/vehicle.test.ts (32 tests) 1408ms
+ src/auth/auth.test.ts (12 tests) 1885ms
+
+ Test Files  7 passed (7)
+      Tests  97 passed (97)
+   Start at  12:53:42
+   Duration  4.81s (transform 740ms, setup 0ms, import 11.07s, tests 9.27s, environment 1ms)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   83.33 |    75.42 |      80 |   83.45 |                   
+ src               |   85.71 |      100 |       0 |   85.71 |                   
+  app.ts           |   85.71 |      100 |       0 |   85.71 | 12                
+ src/auth          |   95.71 |    85.71 |     100 |   95.71 |                   
+  ...controller.ts |   92.85 |    85.71 |     100 |   92.85 | 43,85             
+  auth.routes.ts   |     100 |      100 |     100 |     100 |                   
+  auth.service.ts  |   97.05 |    85.71 |     100 |   97.05 | 86                
+  ....validator.ts |     100 |      100 |     100 |     100 |                   
+  user.model.ts    |     100 |      100 |     100 |     100 |                   
+ src/middleware    |     100 |      100 |     100 |     100 |                   
+  ...middleware.ts |     100 |      100 |     100 |     100 |                   
+ src/utils         |       5 |        0 |       0 |    5.26 |                   
+  email.service.ts |       5 |        0 |       0 |    5.26 | 12-83             
+ src/vehicles      |   85.87 |    81.42 |   81.48 |   85.63 |                   
+  ...controller.ts |   80.83 |    72.91 |   77.77 |   80.34 | ...38-339,375,390 
+  vehicle.model.ts |     100 |      100 |     100 |     100 |                   
+  ...cle.routes.ts |     100 |      100 |     100 |     100 |                   
+  ...le.service.ts |   94.59 |      100 |   88.88 |   94.59 | 92-93             
+  ....validator.ts |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------
