@@ -448,7 +448,7 @@ describe("POST /api/vehicles/import", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.message).toContain("Processed 2 vehicles");
+    expect(response.body.message).toContain("Added 2 new vehicles");
 
     const vehicles = await Vehicle.find({ make: { $in: ["Honda", "BMW"] } });
     expect(vehicles.length).toBe(2);
@@ -473,6 +473,7 @@ describe("POST /api/vehicles/import", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
+    expect(response.body.message).toContain("Found 1 duplicates and added their quantity");
 
     const vehicles = await Vehicle.find({ make: "Ford", model: "Mustang" });
     expect(vehicles.length).toBe(1); // Should not create a duplicate

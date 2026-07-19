@@ -315,7 +315,8 @@ export async function importVehicles(req: Request, res: Response) {
     }
 
     const rows = lines.slice(1);
-    let processedCount = 0;
+    let addedCount = 0;
+    let mergedCount = 0;
     const errors: any[] = [];
     const creatorId = req.user?.userId;
 
@@ -354,21 +355,27 @@ export async function importVehicles(req: Request, res: Response) {
         if (existingVehicle) {
           existingVehicle.quantity += (parsed.data.quantity ?? 1);
           await existingVehicle.save();
+          mergedCount++;
         } else {
           await createVehicle({
             ...parsed.data,
             createdBy: creatorId ? new Object(creatorId) as any : undefined,
           });
+          addedCount++;
         }
-        processedCount++;
       } catch (e: any) {
          errors.push({ row: i + 2, message: e.message || "Failed to save to database" });
       }
     }
 
+    let resultMessage = `Import complete. Added ${addedCount} new vehicles.`;
+    if (mergedCount > 0) {
+      resultMessage += ` Found ${mergedCount} duplicates and added their quantity.`;
+    }
+
     return res.status(200).json({
       success: true,
-      message: `Import complete. Processed ${processedCount} vehicles.`,
+      message: resultMessage,
       errors: errors.length > 0 ? errors : undefined
     });
   } catch (error) {
