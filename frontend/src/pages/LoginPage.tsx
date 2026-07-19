@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
@@ -53,16 +53,16 @@ export default function LoginPage() {
       }
     } catch (err) {
       const axiosErr = err as AxiosError<ApiError>;
-      
+
       let msg = 'Something went wrong. Please try again.';
       const firstError = axiosErr.response?.data?.errors?.[0];
-      
+
       if (firstError) {
         msg = typeof firstError === 'string' ? firstError : firstError.message;
       } else if (axiosErr.response?.data?.message) {
         msg = axiosErr.response.data.message;
       }
-      
+
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -119,11 +119,10 @@ export default function LoginPage() {
                 key={t}
                 type="button"
                 onClick={() => switchTab(t)}
-                className={`relative flex-1 rounded-lg py-2.5 text-sm font-semibold capitalize transition-colors cursor-pointer border-none z-10 ${
-                  tab === t
+                className={`relative flex-1 rounded-lg py-2.5 text-sm font-semibold capitalize transition-colors cursor-pointer border-none z-10 ${tab === t
                     ? 'text-indigo-600 dark:text-indigo-400'
                     : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 {tab === t && (
                   <motion.div
@@ -257,24 +256,24 @@ export default function LoginPage() {
                   shape="circle"
                   width="330"
                   onSuccess={async (credentialResponse) => {
-                  if (credentialResponse.credential) {
-                    try {
-                      setLoading(true);
-                      await googleLogin(credentialResponse.credential);
-                      navigate('/');
-                    } catch (err) {
-                      const axiosErr = err as AxiosError<ApiError>;
-                      const msg = axiosErr.response?.data?.message || 'Google login failed.';
-                      toast.error(msg);
-                    } finally {
-                      setLoading(false);
+                    if (credentialResponse.credential) {
+                      try {
+                        setLoading(true);
+                        await googleLogin(credentialResponse.credential);
+                        navigate('/');
+                      } catch (err) {
+                        const axiosErr = err as AxiosError<ApiError>;
+                        const msg = axiosErr.response?.data?.message || 'Google login failed.';
+                        toast.error(msg);
+                      } finally {
+                        setLoading(false);
+                      }
                     }
-                  }
-                }}
-                onError={() => {
-                  toast.error('Google login failed.');
-                }}
-              />
+                  }}
+                  onError={() => {
+                    toast.error('Google login failed.');
+                  }}
+                />
               </div>
             </div>
           </form>
