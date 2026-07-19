@@ -1,5 +1,14 @@
 # CarVault - Car Dealership Inventory System
 
+## Live Demo
+
+🌐 **Application:** https://car-dealership-inventory-system-three.vercel.app/
+
+**Frontend:** Vercel  
+**Backend:** Railway
+
+---
+
 ## Project Overview
 CarVault is a full-stack Car Dealership Inventory System built with a Node.js/TypeScript backend and a React/Tailwind frontend. It provides robust tools for managing a premium car dealership's inventory
 -> featuring role-based authentication (Admin/User)
