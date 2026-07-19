@@ -52,9 +52,12 @@ export default function VehicleCard({
               {vehicle.category}
             </span>
           </div>
-          <div className="text-right">
+          <div className="flex flex-col items-end gap-1 text-right">
             <span className="font-serif text-2xl font-light tracking-wide text-slate-600 dark:text-slate-300">
               ₹{vehicle.price.toLocaleString('en-IN')}
+            </span>
+            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+              Base
             </span>
           </div>
         </div>
