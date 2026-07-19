@@ -1,7 +1,7 @@
 // src/vehicles/vehicle.routes.ts
 // Route endpoints for the vehicles inventory module.
 
-import { Router } from "express";
+import { Router, text as expressText } from "express";
 import {
   addVehicle,
   listVehicles,
@@ -10,6 +10,8 @@ import {
   removeVehicle,
   buyVehicle,
   restockInventoryVehicle,
+  exportVehicles,
+  importVehicles,
 } from "./vehicle.controller";
 import { authenticate, authorizeAdmin } from "../middleware/auth.middleware";
 
@@ -30,5 +32,9 @@ router.post("/", authorizeAdmin, addVehicle);
 router.put("/:id", authorizeAdmin, editVehicle);
 router.delete("/:id", authorizeAdmin, removeVehicle);
 router.post("/:id/restock", authorizeAdmin, restockInventoryVehicle);
+
+// Bulk Import / Export
+router.get("/export", authorizeAdmin, exportVehicles);
+router.post("/import", authorizeAdmin, expressText({ type: '*/*' }), importVehicles);
 
 export default router;

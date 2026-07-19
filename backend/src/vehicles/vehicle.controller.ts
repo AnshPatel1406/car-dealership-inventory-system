@@ -252,3 +252,95 @@ export async function restockInventoryVehicle(req: Request, res: Response) {
     });
   }
 }
+
+/**
+ * Export all vehicles to a CSV file.
+ */
+export async function exportVehicles(req: Request, res: Response) {
+  try {
+    const vehicles = await getAllVehicles(); 
+
+    const header = "Make,Model,Category,Price,Quantity\n";
+    const rows = vehicles.map((v) => {
+      // Escape quotes in strings just in case
+      const make = `"${v.make.replace(/"/g, '""')}"`;
+      const model = `"${v.model.replace(/"/g, '""')}"`;
+      const category = `"${v.category}"`;
+      return `${make},${model},${category},${v.price},${v.quantity}`;
+    });
+    
+    const csvString = header + rows.join("\n");
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", 'attachment; filename="inventory.csv"');
+    return res.status(200).send(csvString);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Export failed" });
+  }
+}
+
+/**
+ * Import vehicles from a CSV string.
+ */
+export async function importVehicles(req: Request, res: Response) {
+  try {
+    const csvData = req.body;
+    if (typeof csvData !== 'string') {
+      return res.status(400).json({ success: false, message: "Invalid CSV payload" });
+    }
+
+    const lines = csvData.split(/\r?\n/).filter(line => line.trim().length > 0);
+    if (lines.length <= 1) {
+      return res.status(400).json({ success: false, message: "No data rows found" });
+    }
+
+    const rows = lines.slice(1);
+    let addedCount = 0;
+    const errors: any[] = [];
+    const creatorId = req.user?.userId;
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      
+      // Basic CSV parsing for comma separated fields, removing wrapping quotes
+      const cols = row.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+
+      if (cols.length < 5) {
+        errors.push({ row: i + 2, message: "Missing columns" });
+        continue;
+      }
+
+      const vehicleInput = {
+        make: cols[0],
+        model: cols[1],
+        category: cols[2],
+        price: Number(cols[3]),
+        quantity: Number(cols[4])
+      };
+
+      const parsed = createVehicleSchema.safeParse(vehicleInput);
+      if (!parsed.success) {
+        errors.push({ row: i + 2, message: "Validation failed", details: parsed.error.issues });
+        continue;
+      }
+
+      try {
+        await createVehicle({
+          ...parsed.data,
+          createdBy: creatorId ? new Object(creatorId) as any : undefined,
+        });
+        addedCount++;
+      } catch (e: any) {
+         errors.push({ row: i + 2, message: e.message || "Failed to save to database" });
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Import complete. Added ${addedCount} vehicles.`,
+      errors: errors.length > 0 ? errors : undefined
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Import failed" });
+  }
+}
