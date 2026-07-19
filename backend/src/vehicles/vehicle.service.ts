@@ -85,6 +85,15 @@ export async function deleteVehicle(id: string): Promise<boolean> {
 }
 
 /**
+ * Deletes all vehicles from the database.
+ * Returns the number of deleted vehicles.
+ */
+export async function removeAllVehicles(): Promise<number> {
+  const result = await Vehicle.deleteMany({});
+  return result.deletedCount;
+}
+
+/**
  * Purchases a vehicle by decrementing its quantity by 1.
  * Throws an error if the vehicle is not found or is out of stock.
  */

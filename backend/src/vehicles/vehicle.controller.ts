@@ -12,6 +12,7 @@ import {
   deleteVehicle,
   purchaseVehicle,
   restockVehicle,
+  removeAllVehicles,
 } from "./vehicle.service";
 import {
   createVehicleSchema,
@@ -169,6 +170,24 @@ export async function removeVehicle(req: Request, res: Response) {
     return res.status(200).json({
       success: true,
       message: "Vehicle deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+/**
+ * Deletes all vehicles (Admin only).
+ */
+export async function clearAllVehicles(req: Request, res: Response) {
+  try {
+    const deletedCount = await removeAllVehicles();
+    return res.status(200).json({
+      success: true,
+      message: `Deleted ${deletedCount} vehicles successfully`,
     });
   } catch (error) {
     return res.status(500).json({

@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { vehiclesAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Database, AlertCircle, Banknote, PackageSearch, Download, Upload } from 'lucide-react';
+import { Plus, Database, AlertCircle, Banknote, PackageSearch, Download, Upload, Trash2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import VehicleCard, { type Vehicle } from '../components/VehicleCard';
@@ -146,6 +146,18 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (window.confirm("Are you sure you want to delete all vehicles? This action cannot be undone.")) {
+      try {
+        const res = await vehiclesAPI.removeAll();
+        toast.success(res.data.message || 'All vehicles deleted successfully');
+        loadVehicles();
+      } catch (err) {
+        toast.error('Failed to delete all vehicles');
+      }
+    }
+  };
+
   const handleDownloadStock = async () => {
     try {
       const response = await vehiclesAPI.exportCSV();
@@ -224,6 +236,16 @@ export default function DashboardPage() {
 
           {isAdmin && (
             <div className="flex flex-wrap items-center gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleDeleteAll}
+                className="flex items-center gap-2 rounded-xl bg-red-600/10 px-5 py-2.5 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-600/20 cursor-pointer border-none"
+              >
+                <Trash2 className="h-5 w-5" />
+                Delete All
+              </motion.button>
+
               <input 
                 type="file" 
                 accept=".csv" 

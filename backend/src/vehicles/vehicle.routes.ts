@@ -12,6 +12,7 @@ import {
   restockInventoryVehicle,
   exportVehicles,
   importVehicles,
+  clearAllVehicles,
 } from "./vehicle.controller";
 import { authenticate, authorizeAdmin } from "../middleware/auth.middleware";
 
@@ -29,6 +30,7 @@ router.post("/:id/purchase", buyVehicle);
 
 // Admin-only mutations
 router.post("/", authorizeAdmin, addVehicle);
+router.delete("/", authorizeAdmin, clearAllVehicles);
 router.put("/:id", authorizeAdmin, editVehicle);
 router.delete("/:id", authorizeAdmin, removeVehicle);
 router.post("/:id/restock", authorizeAdmin, restockInventoryVehicle);

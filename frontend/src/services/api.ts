@@ -56,6 +56,9 @@ export const vehiclesAPI = {
   remove: (id: string) =>
     api.delete(`/vehicles/${id}`),
 
+  removeAll: () =>
+    api.delete('/vehicles'),
+
   purchase: (id: string) =>
     api.post(`/vehicles/${id}/purchase`),
 
