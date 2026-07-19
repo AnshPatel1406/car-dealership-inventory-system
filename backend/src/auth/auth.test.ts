@@ -161,9 +161,9 @@ vi.mock("google-auth-library", () => {
   });
 
   return {
-    OAuth2Client: vi.fn().mockImplementation(() => ({
-      verifyIdToken: verifyIdTokenMock
-    }))
+    OAuth2Client: class {
+      verifyIdToken = verifyIdTokenMock;
+    }
   };
 });
 
