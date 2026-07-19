@@ -3,6 +3,7 @@
 ## Live Demo
 
 🌐 **Application:** https://car-dealership-inventory-system-three.vercel.app/
+Admin Credentials for Evaluation : (admin@gmail.com | Admin@123)
 
 **Frontend:** Vercel  
 **Backend:** Railway
