@@ -69,6 +69,7 @@ export default function DashboardPage() {
     try {
       await vehiclesAPI.purchase(id);
       toast.success('Vehicle purchased successfully! 🎉');
+      toast.success('Email receipt sent successfully 📧');
       loadVehicles();
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;
